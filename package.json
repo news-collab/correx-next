@@ -13,18 +13,41 @@
 		"lint": "prettier --check --plugin-search-dir=. .",
 		"format": "prettier --write --plugin-search-dir=. ."
 	},
-	"devDependencies": {
+	"dependencies": {
+		"axios": "^0.19.0",
+		"class-validator": "^0.11.0",
+		"metascraper": "^5.11.0",
+		"metascraper-author": "^5.10.7",
+		"metascraper-date": "^5.10.7",
+		"metascraper-description": "^5.11.0",
+		"metascraper-image": "^5.10.7",
+		"metascraper-publisher": "^5.10.7",
+		"metascraper-title": "^5.10.7",
+		"metascraper-url": "^5.10.7",
 		"@playwright/test": "^1.22.2",
 		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/adapter-node": "^1.0.0-next.83",
 		"@sveltejs/kit": "next",
+		"moment": "^2.29.4",
 		"prettier": "^2.6.2",
 		"prettier-plugin-svelte": "^2.7.0",
 		"svelte": "^3.44.0",
 		"svelte-check": "^2.7.1",
+		"svelte-icons": "^2.1.0",
 		"svelte-preprocess": "^4.10.6",
 		"tslib": "^2.3.1",
+		"twitter-text": "^3.1.0",
 		"typescript": "^4.7.4",
-		"vite": "^3.0.0"
+		"vite": "^3.0.0",
+		"@opentelemetry/api": "^1.0.3",
+		"@opentelemetry/auto-instrumentations-node": "^0.25.0",
+		"@opentelemetry/exporter-jaeger": "^1.0.0",
+		"@opentelemetry/sdk-node": "^0.26.0",
+		"dotenv": "^16.0.1",
+		"twitter": "^1.7.1",
+		"twitter-v2": "^1.1.0",
+		"typeorm": "^0.2.37",
+		"uuid": "^3.3.3"
 	},
 	"type": "module"
 }

@@ -1,2 +1,48 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+
+	function createNewVisitorCookie() {
+		document.cookie = 'new_visitor=true;';
+	}
+
+	function getNewVisitorCookie() {
+		return document.cookie.split('; ').find((row) => row.startsWith('new_visitor='));
+	}
+
+	onMount(async () => {
+		if (!document.cookie) {
+			createNewVisitorCookie();
+			await goto('/about');
+			return;
+		}
+
+		const newVisitorCookie = getNewVisitorCookie();
+
+		if (!newVisitorCookie) {
+			createNewVisitorCookie();
+		}
+	});
+</script>
+
+<svelte:head>
+	<title>Correx</title>
+</svelte:head>
+
+<h1>Correx</h1>
+
+<style>
+	h1 {
+		text-align: center;
+		margin: 0 auto;
+		font-size: 2.8em;
+		font-weight: bold;
+		margin: 0 0 0.5em 0;
+	}
+
+	@media (min-width: 480px) {
+		h1 {
+			font-size: 4em;
+		}
+	}
+</style>
