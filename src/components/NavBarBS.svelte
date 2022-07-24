@@ -112,7 +112,9 @@
 			{:else}
 				<ul class="navbar-nav">
 					<li class="nav-item">
-						<a class="nav-link" href="/api/auth/signin/twitter?redirect=/" sapper:prefetch>Login</a>
+						<a class="nav-link" href="/api/auth/signin/twitter?redirect=/banaza" sapper:prefetch
+							>Login</a
+						>
 					</li>
 				</ul>
 			{/if}
