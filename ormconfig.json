@@ -1,0 +1,41 @@
+[
+  {
+    "NOTE": "THIS IS ONLY USED IN CONJUNCTION WITH THE CLI BLOCK BELOW",
+    "name": "development",
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "correx_admin",
+    "password": "cassowary",
+    "database": "correx",
+    "logging": false,
+    "entities": [
+      "src/entity/**/*.ts"
+    ]
+  },
+  {
+    "NOTE": "THIS IS ONLY USED FOR CLI PURPOSES",
+    "name": "default",
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "correx_admin",
+    "password": "cassowary",
+    "database": "correx",
+    "logging": false,
+    "entities": [
+      "src/entity/**/*.ts"
+    ],
+    "migrations": [
+      "src/migration/**/*.ts"
+    ],
+    "subscribers": [
+      "src/subscriber/**/*.ts"
+    ],
+    "cli": {
+      "entitiesDir": "src/entity",
+      "migrationsDir": "src/migration",
+      "subscribersDir": "src/subscriber"
+    }
+  }
+]
