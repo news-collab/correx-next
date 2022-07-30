@@ -1,8 +1,8 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, Index, ManyToOne, OneToMany, EntitySchema } from 'typeorm';
 import { IsUrl } from 'class-validator';
-import { Reply } from './Reply';
-import { Subject } from './Subject';
-import { User } from './User';
+import { Reply } from './Reply.ts';
+import { Subject } from './Subject.ts';
+import { User } from './User.ts';
 
 /* 
   What do we need to know about social media posts?

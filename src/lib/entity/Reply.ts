@@ -1,7 +1,7 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, Index, ManyToOne } from 'typeorm';
 import { IsUrl } from 'class-validator';
-import { Post } from './Post';
-import { User } from './User';
+import { Post } from './Post.ts';
+import { User } from './User.ts';
 
 export enum Platforms { twitter, facebook }
 

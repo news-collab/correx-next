@@ -1,23 +1,44 @@
-import { createConnection as createTypeORMConnection, getConnection } from 'typeorm';
 // Irritatingly importing the dependency graph here is order dependent.
-import { Reply } from './entity/Reply';
-import { Post } from './entity/Post';
-import { Subject } from './entity/Subject';
-import { User } from './entity/User';
+import { Reply } from './lib/entity/Reply';
+import { Post } from './lib/entity/Post';
+import { Subject } from './lib/entity/Subject';
+import { User } from './lib/entity/User';
 
-const entities = {
+import { DataSource } from "typeorm"
+
+var datasource = null;
+
+export const entities = {
   Post: Post,
   Reply: Reply,
   Subject: Subject,
   User: User,
 };
 
-async function createConnection(config: any) {
-  config.entities = Object.values(entities);
+export async function createConnection(config: any) {
+  datasource = new DataSource({
+    type: config.type,
+    host: config.host,
+    port: config.port,
+    username: config.username,
+    password: config.password,
+    database: config.database,
+    entities: [Post, Reply, Subject, User],
+  })
 
-  console.log("Starting database connection");
-  let connection = await createTypeORMConnection(config);
-  return connection;
+  datasource.initialize()
+    .then(() => {
+      console.log("Data Source has been initialized!")
+    })
+    .catch((err) => {
+      console.error("Error during Data Source initialization", err)
+    })
+
+  return datasource
+}
+
+export function getConnection() {
+  return getConnection;
 }
 
 export default {

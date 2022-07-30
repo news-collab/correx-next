@@ -1,8 +1,8 @@
 import { v4 } from 'uuid';
 import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany, ManyToOne } from 'typeorm';
 import { IsUrl, IsUUID } from 'class-validator';
-import { Post } from './Post';
-import { User } from './User';
+import { Post } from './Post.ts';
+import { User } from './User.ts';
 import metascraperFactory from 'metascraper';
 import metascraperAuthor from 'metascraper-author';
 import metascraperDate from 'metascraper-date';

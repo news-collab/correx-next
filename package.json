@@ -12,8 +12,8 @@
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check --plugin-search-dir=. .",
 		"format": "prettier --write --plugin-search-dir=. .",
-		"migration:run": "TS_NODE_PROJECT=tsconfig.ts-node.json TS_NODE_TRANSPILE_ONLY=true ts-node ./node_modules/typeorm/cli.js migration:run",
-		"migration": "TS_NODE_PROJECT=tsconfig.ts-node.json TS_NODE_TRANSPILE_ONLY=true ts-node ./node_modules/typeorm/cli.js"
+		"migration:run": "typeorm -d src/db.ts migration:run",
+		"migration": "typeorm"
 	},
 	"dependencies": {
 		"@opentelemetry/api": "^1.0.3",
@@ -50,7 +50,7 @@
 		"twitter-api-v2": "^1.12.3",
 		"twitter-text": "^3.1.0",
 		"twitter-v2": "^1.1.0",
-		"typeorm": "^0.2.37",
+		"typeorm": "^0.3.7",
 		"typescript": "^4.7.4",
 		"uuid": "^3.3.3",
 		"vite": "^3.0.0"

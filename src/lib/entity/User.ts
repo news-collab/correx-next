@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
-import { Subject } from "./Subject";
-import { Post } from "./Post";
-import { Reply } from "./Reply";
+import { Subject } from "./Subject.ts";
+import { Post } from "./Post.ts";
+import { Reply } from "./Reply.ts";
 
 @Entity()
 export class User {
