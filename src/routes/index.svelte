@@ -13,7 +13,9 @@
 	}
 
 	function signOut() {
-		authSignOut().then(session.set);
+		authSignOut().then(() => {
+			console.log(`args`, arguments);
+		});
 	}
 
 	onMount(async () => {

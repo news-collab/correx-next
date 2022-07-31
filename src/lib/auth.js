@@ -1,6 +1,5 @@
 import { SvelteKitAuth } from "sk-auth";
 import { TwitterAuthProvider, RedditOAuth2Provider } from "sk-auth/providers";
-import { preProcessFile } from "typescript";
 import { TwitterV2AuthProvider } from "./twitterv2";
 
 export const appAuth = new SvelteKitAuth({
@@ -34,6 +33,8 @@ export const appAuth = new SvelteKitAuth({
     jwt(token, profile) {
       if (profile?.provider) {
         const { provider, ...account } = profile;
+        console.log(`profile`, profile)
+
         token = {
           ...token,
           user: {

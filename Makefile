@@ -23,7 +23,7 @@ db: db-volume network ## Create the database container.
 	docker run --rm -d --env-file .env $(network) --network-alias db -p 5432:5432 --name $(db_name) -v $(db_name):/var/lib/postgresql/data postgres:13
 
 db-shell: ## Start a shell in the db container.
-	docker run --rm -it $(network) --name $(db_name)-shell postgres:13 psql -h db -U correx_admin -W -d correx
+	docker run --rm -it $(network) --name $(db_name)-shell postgres:13 psql -h db -U dev -W -d correx
 
 db-migrate: ## Migrate the database.
 	npm run migration:run

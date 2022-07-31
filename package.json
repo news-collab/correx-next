@@ -12,7 +12,7 @@
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check --plugin-search-dir=. .",
 		"format": "prettier --write --plugin-search-dir=. .",
-		"migration:run": "typeorm -d src/db.ts migration:run",
+		"migration:run": "prisma migrate deploy",
 		"migration": "typeorm"
 	},
 	"dependencies": {
@@ -40,7 +40,7 @@
 		"pg": "^8.7.1",
 		"prettier": "^2.6.2",
 		"prettier-plugin-svelte": "^2.7.0",
-		"sk-auth": "^0.4.1",
+		"sk-auth": "github:Dan6erbond/sk-auth#main",
 		"svelte": "^3.44.0",
 		"svelte-check": "^2.7.1",
 		"svelte-icons": "^2.1.0",

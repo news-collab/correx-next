@@ -1,3 +1,7 @@
+<script>
+	import { session } from '$app/stores';
+</script>
+
 <h1>Twitter</h1>
 {#if $session.user && $session.user.connections && $session.user.connections.twitterV2}
 	<p>Signed in as:</p>
