@@ -26,7 +26,7 @@ db-shell: ## Start a shell in the db container.
 	docker run --rm -it $(network) --name $(db_name)-shell postgres:13 psql -h db -U dev -W -d correx
 
 db-migrate: ## Migrate the database.
-	npm run migration:run
+	npm run migration:dev
 
 image:
 	docker buildx rm $(project_name) || true

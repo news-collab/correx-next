@@ -12,8 +12,7 @@
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check --plugin-search-dir=. .",
 		"format": "prettier --write --plugin-search-dir=. .",
-		"migration:run": "prisma migrate deploy",
-		"migration": "typeorm"
+		"migration:dev": "prisma migrate dev"
 	},
 	"dependencies": {
 		"@opentelemetry/api": "^1.0.3",
