@@ -31,20 +31,36 @@ export const appAuth = new SvelteKitAuth({
         console.log(`token`, token);
 
         const prisma = new PrismaClient()
-        let providerVal;
+        let userPlatform;
 
         switch (profile.provider) {
           case "twitter":
-            providerVal = platform.TWITTER;
+            // Get existing user platforms.
+            userPlatform = await prisma.user_platforms.findFirst({
+              where: {
+                platform: platform.TWITTER,
+                platform_id: profile.id
+              }
+            });
             break;
           case "reddit":
-            providerVal = platform.REDDIT;
+            userPlatform = await prisma.user_platforms.findFirst({
+              where: {
+                platform: platform.REDDIT,
+                platform_id: profile.id
+              }
+            });
             break;
         }
 
-        // Get existing user platforms.
-        const userPlatform = await prisma.user_platforms.findFirst({
+        if (!userPlatform) {
 
+        }
+
+        // Get existing user platforms.
+        const userPlatform = await prisma.user_platforms.findUnique({
+          where: {
+            platform_id:  
         })
 
         // Create user.
