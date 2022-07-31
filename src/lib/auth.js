@@ -31,56 +31,48 @@ export const appAuth = new SvelteKitAuth({
         console.log(`token`, token);
 
         const prisma = new PrismaClient()
-        let userPlatform;
+        const providerMap = {
+          "twitter": platform.TWITTER,
+          "reddit": platform.REDDIT,
+        };
 
-        switch (profile.provider) {
-          case "twitter":
-            // Get existing user platforms.
-            userPlatform = await prisma.user_platforms.findFirst({
-              where: {
-                platform: platform.TWITTER,
-                platform_id: profile.id
-              }
-            });
-            break;
-          case "reddit":
-            userPlatform = await prisma.user_platforms.findFirst({
-              where: {
-                platform: platform.REDDIT,
-                platform_id: profile.id
-              }
-            });
-            break;
+        let platformWhere;
+        let platformFields;
+        if (profile.provider === "twitter") {
+          platformWhere = {
+            twitter_user_id: profile.id
+          }
+          platformFields = {
+            name: profile.screen_name,
+            avatar_url: profile.profile_image_url_https,
+            twitter_user_id: profile.id,
+            twitter_username: profile.screen_name
+          }
         }
 
-        if (!userPlatform) {
-
+        if (profile.provider === "reddit") {
+          platformWhere = {
+            reddit_user_id: profile.id
+          }
+          platformFields = {
+            name: profile.name,
+            avatar_url: profile.snoovatar_img,
+            reddit_user_id: profile.id,
+            reddit_useername: profile.name
+          }
         }
 
-        // Get existing user platforms.
-        const userPlatform = await prisma.user_platforms.findUnique({
-          where: {
-            platform_id:  
-        })
-
-        // Create user.
-        const userPlatform = await prisma.users.upsert({
-          where: {
-            platform: providerVal,
-            email: 'viola@prisma.io',
-          },
-          update: {
-            name: 'Viola the Magnificent',
-          },
-          create: {
-            email: 'viola@prisma.io',
-            name: 'Viola the Magnificent',
-          },
-        })
+        // Get user
+        const user = await prisma.users.upsert({
+          create: platformFields,
+          update: platformFields,
+          where: platformWhere
+        });
 
         token = {
           ...token,
           user: {
+            ...user,
             ...(token.user ?? {}),
             connections: { ...(token.user?.connections ?? {}), [provider]: account },
           },

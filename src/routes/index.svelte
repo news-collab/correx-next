@@ -36,6 +36,7 @@
 </svelte:head>
 
 <h1>Correx</h1>
+{$session.user.id}
 <button on:click={signOut}>sign out</button>
 
 <style>

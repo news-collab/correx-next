@@ -69,34 +69,21 @@ model subjects {
 
 // Correx users.
 model users {
-  id         String    @id @default(uuid())
-  name       String?   @db.VarChar
-  email      String?   @db.VarChar
-  avatar_url String?
-  admin      Boolean?  @default(false)
-  created_at DateTime? @default(now()) @db.Timestamp(6)
-  updated_at DateTime? @default(now()) @db.Timestamp(6)
+  id               String    @id @default(uuid())
+  name             String?   @db.VarChar
+  email            String?   @db.VarChar
+  avatar_url       String?
+  twitter_user_id  Int?      @unique
+  twitter_username String?   @unique
+  reddit_user_id   String?   @unique
+  reddit_username  String?   @unique
+  admin            Boolean?  @default(false)
+  created_at       DateTime? @default(now()) @db.Timestamp(6)
+  updated_at       DateTime? @default(now()) @db.Timestamp(6)
 
-  post      posts[]
-  reply     replies[]
-  subject   subjects[]
-  platforms user_platforms[]
-}
-
-// User platforms are platforms the user has integrated with.
-model user_platforms {
-  id          String    @id @default(uuid())
-  user_id     String
-  platform    platform  @default(TWITTER)
-  platform_id String
-  username    String
-  created_at  DateTime? @default(now()) @db.Timestamp(6)
-  updated_at  DateTime? @default(now()) @db.Timestamp(6)
-
-  user users @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@index([id])
-  @@index([user_id])
+  post    posts[]
+  reply   replies[]
+  subject subjects[]
 }
 
 // An enum type used to indicate which platform a record belongs to.

@@ -61,7 +61,7 @@
 				</li>
 				<li class="nav-item dropdown" />
 			</ul>
-			{#if $session && $session.user && $session.user.connections.twitterV2}
+			{#if $session && $session.user && $session.user.id}
 				<div class="d-flex">
 					<ul class="navbar-nav">
 						<li class="nav-item dropdown">
@@ -73,19 +73,13 @@
 								data-bs-toggle="dropdown"
 								aria-expanded="false"
 							>
-								<img
-									class="avatar"
-									src={$session.user.connections.twitterV2.avatarUrl}
-									alt="Avatar"
-								/>
+								<img class="avatar" src={$session.user.avatar_url} alt="Avatar" />
 							</a>
 
 							<ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdown">
 								<li>
-									<a
-										class="dropdown-item"
-										href="https://www.twitter.com/{$session.user.connections.twitterV2.screenname}"
-										>@{$session.user.connections.twitterV2.screenname}</a
+									<a class="dropdown-item" href="https://www.twitter.com/{$session.user.name}"
+										>@{$session.user.name}</a
 									>
 								</li>
 								{#if true}
