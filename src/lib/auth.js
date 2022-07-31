@@ -29,34 +29,39 @@ export const appAuth = new SvelteKitAuth({
         const { provider, ...account } = profile;
         console.log(`profile`, profile)
         console.log(`token`, token);
-        /*
-                const prisma = new PrismaClient()
-                let providerVal;
-        
-                switch (profile.provider) {
-                  case "twitter":
-                    providerVal = platform.TWITTER;
-                    break;
-                  case "reddit":
-                    providerVal = platform.REDDIT;
-                    break;
-                }
-        
-                // Create user.
-                const userPlatform = await prisma.users.upsert({
-                  where: {
-                    platform: providerVal,
-                    email: 'viola@prisma.io',
-                  },
-                  update: {
-                    name: 'Viola the Magnificent',
-                  },
-                  create: {
-                    email: 'viola@prisma.io',
-                    name: 'Viola the Magnificent',
-                  },
-                })
-        */
+
+        const prisma = new PrismaClient()
+        let providerVal;
+
+        switch (profile.provider) {
+          case "twitter":
+            providerVal = platform.TWITTER;
+            break;
+          case "reddit":
+            providerVal = platform.REDDIT;
+            break;
+        }
+
+        // Get existing user platforms.
+        const userPlatform = await prisma.user_platforms.findFirst({
+
+        })
+
+        // Create user.
+        const userPlatform = await prisma.users.upsert({
+          where: {
+            platform: providerVal,
+            email: 'viola@prisma.io',
+          },
+          update: {
+            name: 'Viola the Magnificent',
+          },
+          create: {
+            email: 'viola@prisma.io',
+            name: 'Viola the Magnificent',
+          },
+        })
+
         token = {
           ...token,
           user: {

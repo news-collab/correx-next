@@ -9,14 +9,13 @@ datasource db {
 
 // A platform's post (Twitter tweet/Reddit submission).
 model posts {
-  id               String   @id @default(uuid())
-  platform         platform @default(TWITTER)
-  platform_id_hash Int
-  platform_id_str  String   @db.VarChar
-  platform_url     String   @db.VarChar
-  data             Json
-  subject_id       String?
-  user_id          String?
+  id           String   @id @default(uuid())
+  platform     platform @default(TWITTER)
+  platform_id  String   @db.VarChar
+  platform_url String   @db.VarChar
+  data         Json
+  subject_id   String?
+  user_id      String?
 
   created_at DateTime? @default(now()) @db.Timestamp(6)
   updated_at DateTime? @default(now()) @db.Timestamp(6)
@@ -26,29 +25,26 @@ model posts {
   user    users?    @relation(fields: [user_id], references: [id])
 
   @@index([platform_url])
-  @@index([platform_id_hash])
-  @@index([platform_id_str])
+  @@index([platform_id])
   @@index([id])
 }
 
 // A direct reply via Correx to a platform's post (Twitter tweet/Reddit submission).
 model replies {
-  id               String    @id @default(uuid())
-  platform         platform  @default(TWITTER)
-  platform_id_hash Int
-  platform_id_str  String    @db.VarChar
-  data             Json
-  post_id          String?
-  author_id        String?
-  created_at       DateTime? @default(now()) @db.Timestamp(6)
-  updated_at       DateTime? @default(now()) @db.Timestamp(6)
+  id          String    @id @default(uuid())
+  platform    platform  @default(TWITTER)
+  platform_id String    @db.VarChar
+  data        Json
+  post_id     String?
+  author_id   String?
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @db.Timestamp(6)
 
   author users? @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   post   posts? @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([id])
-  @@index([platform_id_hash])
-  @@index([platform_id_str])
+  @@index([platform_id])
   @@index([post_id])
   @@index([author_id])
 }
@@ -89,16 +85,18 @@ model users {
 
 // User platforms are platforms the user has integrated with.
 model user_platforms {
-  id               String    @id @default(uuid())
-  user_id          String
-  platform         platform  @default(TWITTER)
-  platform_id_hash Int
-  platform_id_str  String
-  username         String
-  created_at       DateTime? @default(now()) @db.Timestamp(6)
-  updated_at       DateTime? @default(now()) @db.Timestamp(6)
+  id          String    @id @default(uuid())
+  user_id     String
+  platform    platform  @default(TWITTER)
+  platform_id String
+  username    String
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  updated_at  DateTime? @default(now()) @db.Timestamp(6)
 
   user users @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([id])
+  @@index([user_id])
 }
 
 // An enum type used to indicate which platform a record belongs to.
