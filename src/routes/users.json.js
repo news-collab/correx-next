@@ -3,12 +3,12 @@ import { PrismaClient } from '@prisma/client'
 import opentelemetry from '@opentelemetry/api';
 const tracer = opentelemetry.trace.getTracer('correx');
 
-const prisma = new PrismaClient()
 
-
-export async function GET(req, res) {
+export async function GET() {
   const parentSpan = tracer.startSpan('api-get-users');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
+
+  const prisma = new PrismaClient()
 
   //console.log("Is there a user in subjects.json?", req.session && req.session.passport && req.session.passport.user);
   /*if (req.session && req.session.passport && req.session.passport.user) {
@@ -49,6 +49,8 @@ export async function POST(req, res) {
   const parentSpan = tracer.startSpan('api-create-user');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
   const { username, role } = req.body.user;
+
+  const prisma = new PrismaClient()
 
   //console.log("Is there a user?", req.session && req.session.passport && req.session.passport.user);
   if (req.session && req.session.passport && req.session.passport.user) {

@@ -6,7 +6,7 @@ const twitterProfileHandler = ({ id, id_str, name, screen_name, description, pro
 });
 
 const defaultConfig = {
-  id: "twitterV2",
+  id: "twitter",
   profile: twitterProfileHandler,
 }
 
