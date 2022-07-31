@@ -7,82 +7,102 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model migrations {
-  id        Int    @id(map: "PK_8c82d7f526340ab734260ea46be") @default(autoincrement())
-  timestamp BigInt
-  name      String @db.VarChar
+// A platform's post (Twitter tweet/Reddit submission).
+model posts {
+  id               String   @id @default(uuid())
+  platform         platform @default(TWITTER)
+  platform_id_hash Int
+  platform_id_str  String   @db.VarChar
+  platform_url     String   @db.VarChar
+  data             Json
+  subject_id       String?
+  user_id          String?
+
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+
+  replies replies[]
+  subject subjects? @relation(fields: [subject_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user    users?    @relation(fields: [user_id], references: [id])
+
+  @@index([platform_url])
+  @@index([platform_id_hash])
+  @@index([platform_id_str])
+  @@index([id])
 }
 
-model post {
-  id         Int                @id(map: "PK_be5fda3aac270b134ff9c21cdee") @default(autoincrement())
-  platform   post_platform_enum @default(dbgenerated("0"))
-  platformId String             @db.VarChar
-  url        String             @db.VarChar
-  data       Json
-  subjectId  Int?
-  starred    Boolean            @default(false)
-  userId     Int?
-  user       user?              @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5c1cf55c308037b5aca1038a131")
-  subject    subject?           @relation(fields: [subjectId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_e1b114a8be985356d01aa1095ce")
-  reply      reply[]
+// A direct reply via Correx to a platform's post (Twitter tweet/Reddit submission).
+model replies {
+  id               String    @id @default(uuid())
+  platform         platform  @default(TWITTER)
+  platform_id_hash Int
+  platform_id_str  String    @db.VarChar
+  data             Json
+  post_id          String?
+  author_id        String?
+  created_at       DateTime? @default(now()) @db.Timestamp(6)
+  updated_at       DateTime? @default(now()) @db.Timestamp(6)
 
-  @@index([url], map: "IDX_2d4cb7f2ff3bcc12f0639d8f86")
-  @@index([id], map: "IDX_be5fda3aac270b134ff9c21cde")
+  author users? @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  post   posts? @relation(fields: [post_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([id])
+  @@index([platform_id_hash])
+  @@index([platform_id_str])
+  @@index([post_id])
+  @@index([author_id])
 }
 
-model reply {
-  id         Int                 @id(map: "PK_94fa9017051b40a71e000a2aff9") @default(autoincrement())
-  platform   reply_platform_enum @default(dbgenerated("0"))
-  platformId String              @db.VarChar
-  data       Json
-  postId     Int?
-  userId     Int?
-  post       post?               @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_650bb493bc96cdc1c6a95d50ccd")
-  user       user?               @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_e9886d6d04a19413a2f0aac5d7b")
+// The "thing" being searched for.
+model subjects {
+  id           String    @id @default(uuid())
+  url          String    @db.VarChar
+  metadata     Json      @default("{}")
+  submitter_id String?
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+  updated_at   DateTime? @default(now()) @db.Timestamp(6)
 
-  @@index([id], map: "IDX_94fa9017051b40a71e000a2aff")
+  post      posts[]
+  submitter users?  @relation(fields: [submitter_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([id])
+  @@index([url])
+  @@index([metadata])
+  @@index([submitter_id])
 }
 
-model subject {
-  id        Int       @id(map: "PK_12eee115462e38d62e5455fc054") @default(autoincrement())
-  url       String    @db.VarChar
-  uuid      String    @db.VarChar
-  metadata  Json      @default("{}")
-  userId    Int?
-  createdAt DateTime? @default(now()) @db.Timestamp(6)
-  user      user?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f3d464e642ccfc389de4463d6c9")
-  post      post[]
+// Correx users.
+model users {
+  id         String    @id @default(uuid())
+  name       String?   @db.VarChar
+  email      String?   @db.VarChar
+  avatar_url String?
+  admin      Boolean?  @default(false)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
 
-  @@index([id], map: "IDX_12eee115462e38d62e5455fc05")
-  @@index([url], map: "IDX_5acc6679899bd3c8c8c0df8380")
-  @@index([metadata], map: "IDX_7881a1bb95366970ea4888e8c4")
-  @@index([uuid], map: "IDX_8a44a076bfdb895141a4984ffd")
+  post      posts[]
+  reply     replies[]
+  subject   subjects[]
+  platforms user_platforms[]
 }
 
-model user {
-  id               Int       @id(map: "PK_cace4a159ff9f2512dd42373760") @default(autoincrement())
-  twitterId        String?   @db.VarChar
-  name             String?   @db.VarChar
-  screenname       String?   @db.VarChar
-  description      String    @db.VarChar
-  verified         Boolean?
-  twitterCreatedAt DateTime? @db.Timestamp(6)
-  token            String?   @db.VarChar
-  tokenSecret      String?   @db.VarChar
-  avatarUrl        String?
-  admin            Boolean?  @default(false)
-  reddit_id        String?   @db.VarChar
-  post             post[]
-  reply            reply[]
-  subject          subject[]
+// User platforms are platforms the user has integrated with.
+model user_platforms {
+  id               String    @id @default(uuid())
+  user_id          String
+  platform         platform  @default(TWITTER)
+  platform_id_hash Int
+  platform_id_str  String
+  username         String
+  created_at       DateTime? @default(now()) @db.Timestamp(6)
+  updated_at       DateTime? @default(now()) @db.Timestamp(6)
+
+  user users @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-enum post_platform_enum {
-  TWITTER
-  REDDIT
-}
-
-enum reply_platform_enum {
+// An enum type used to indicate which platform a record belongs to.
+enum platform {
   TWITTER
   REDDIT
 }

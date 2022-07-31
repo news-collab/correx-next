@@ -1,5 +1,5 @@
 import { SvelteKitAuth } from "sk-auth";
-import { TwitterAuthProvider, RedditOAuth2Provider } from "sk-auth/providers";
+import { RedditOAuth2Provider } from "sk-auth/providers";
 import { TwitterV2AuthProvider } from "./twitterv2";
 
 export const appAuth = new SvelteKitAuth({
@@ -11,13 +11,6 @@ export const appAuth = new SvelteKitAuth({
       profile(profile) {
         const slim = RedditOAuth2Provider.profileHandler(profile);
         return { ...slim, provider: "reddit" };
-      },
-    }),
-    new TwitterAuthProvider({
-      apiKey: import.meta.env.VITE_TWITTER_API_KEY,
-      apiSecret: import.meta.env.VITE_TWITTER_API_SECRET,
-      profile: (profile) => {
-        return { ...profile, provider: 'twitter' };
       },
     }),
     new TwitterV2AuthProvider({
