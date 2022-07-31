@@ -1,38 +1,51 @@
-import db from '../db.ts';
+import { PrismaClient } from '@prisma/client'
+
 import opentelemetry from '@opentelemetry/api';
 const tracer = opentelemetry.trace.getTracer('correx');
 
-const { NODE_ENV } = process.env;
-if (NODE_ENV === undefined) { throw "NODE_ENV must be defined"; }
+const prisma = new PrismaClient()
 
-export async function get(req, res) {
+
+export async function GET(req, res) {
   const parentSpan = tracer.startSpan('api-get-users');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
 
   //console.log("Is there a user in subjects.json?", req.session && req.session.passport && req.session.passport.user);
-  if (req.session && req.session.passport && req.session.passport.user) {
+  /*if (req.session && req.session.passport && req.session.passport.user) {
     const user = req.session.passport.user;
-    const connection = await db.getConnection(NODE_ENV);
-    const { User } = db.entities;
+    /*const connection = await db.getConnection(NODE_ENV);
+    const { User } = db.entities;*/
 
-    const userRepo = connection.getRepository(User);
-    const getUsersSpan = tracer.startSpan("db-get-users", undefined, ctx);
-    const users = await userRepo.find();
-    getUsersSpan.setAttribute("users", users.length);
-    getUsersSpan.end();
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    parentSpan.end();
-    res.end(JSON.stringify({ users }));
-
-    return
-  }
-
-  res.writeHead(401, { 'Content-Type': 'application/json' });
+  //const userRepo = connection.getRepository(User);
+  const getUsersSpan = tracer.startSpan("db-get-users", undefined, ctx);
+  const users = await prisma.user.findMany();
+  getUsersSpan.setAttribute("users", users.length);
+  getUsersSpan.end();
+  //res.writeHead(200, { 'Content-Type': 'application/json' });
   parentSpan.end();
-  res.end(JSON.stringify({ message: "Unauthorized: please log in" }));
+  //res.end(JSON.stringify({ users }));
+
+  return {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: users
+  }
+  /*  }
+  
+    //res.writeHead(401, { 'Content-Type': 'application/json' });
+    parentSpan.end();
+    return {
+      status: 401,
+      body: {
+        message: "Unauthorized: please log in"
+      }
+    }*/
+  //res.end(JSON.stringify({ message: "Unauthorized: please log in" }));
 }
 
-export async function post(req, res) {
+export async function POST(req, res) {
   const parentSpan = tracer.startSpan('api-create-user');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
   const { username, role } = req.body.user;

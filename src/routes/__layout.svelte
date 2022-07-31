@@ -1,8 +1,8 @@
 <script>
-	import NavBarBS from '@/components/NavBarBS.svelte';
+	import NavBar from '@/components/NavBar.svelte';
 </script>
 
-<NavBarBS />
+<NavBar />
 
 <div class="main container-xl">
 	<slot />

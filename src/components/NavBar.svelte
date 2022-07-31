@@ -61,7 +61,7 @@
 				</li>
 				<li class="nav-item dropdown" />
 			</ul>
-			{#if $session.passport && $session.passport.user}
+			{#if $session && $session.user && $session.user.connections.twitterV2}
 				<div class="d-flex">
 					<ul class="navbar-nav">
 						<li class="nav-item dropdown">
@@ -73,18 +73,22 @@
 								data-bs-toggle="dropdown"
 								aria-expanded="false"
 							>
-								<img class="avatar" src={$session.passport.user.avatarUrl} alt="Avatar" />
+								<img
+									class="avatar"
+									src={$session.user.connections.twitterV2.avatarUrl}
+									alt="Avatar"
+								/>
 							</a>
 
 							<ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdown">
 								<li>
 									<a
 										class="dropdown-item"
-										href="https://www.twitter.com/{$session.passport.user.screenname}"
-										>@{$session.passport.user.screenname}</a
+										href="https://www.twitter.com/{$session.user.connections.twitterV2.screenname}"
+										>@{$session.user.connections.twitterV2.screenname}</a
 									>
 								</li>
-								{#if $session.passport.user.admin}
+								{#if true}
 									<li>
 										<a class="dropdown-item" href="/admin/users" sapper:prefetch>User Management</a>
 									</li>
@@ -112,9 +116,7 @@
 			{:else}
 				<ul class="navbar-nav">
 					<li class="nav-item">
-						<a class="nav-link" href="/api/auth/signin/twitter?redirect=/banaza" sapper:prefetch
-							>Login</a
-						>
+						<a class="nav-link" href="/login" sapper:prefetch>Login</a>
 					</li>
 				</ul>
 			{/if}
