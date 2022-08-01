@@ -1,74 +1,77 @@
-import db from '../db.ts';
-import * as uuid from 'uuid';
 import { getTweets } from '../twitter';
 import { search } from '../twitterV2';
 import opentelemetry from '@opentelemetry/api';
+import { PrismaClient } from '@prisma/client'
+import { session } from '$app/stores';
+import { extractMetadata } from "$lib/meta";
+
 
 const tracer = opentelemetry.trace.getTracer('correx');
 
-const { NODE_ENV } = process.env;
-if (NODE_ENV === undefined) { throw "NODE_ENV must be defined"; }
+export async function GET(things) {
+  console.log('things', things)
+  const { user } = locals;
 
-export async function get(req, res) {
-  const parentSpan = tracer.startSpan('api-get-sources');
+  console.log(session);
+  const parentSpan = tracer.startSpan('api-get-subjects');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
 
-  if (req.session && req.session.passport && req.session.passport.user) {
-    const user = req.session.passport.user;
-    const connection = await db.getConnection(NODE_ENV);
-    const { Subject } = db.entities;
+  const prisma = new PrismaClient()
 
-    const subjectRepo = connection.getRepository(Subject);
+  if (user) {
     const getSubjectsSpan = tracer.startSpan("db-get-subjects", undefined, ctx);
-    const subjects = await subjectRepo.find({ where: { user: user }, relations: ["posts"] });
+    const subjects = prisma.subjects.findMany({
+      submitter_id: user.id
+    });
     getSubjectsSpan.setAttribute("subjects", subjects.length);
     getSubjectsSpan.end();
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    parentSpan.end();
-    res.end(JSON.stringify({ subjects }));
 
-    return
+    return {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: subjects
+    }
+    parentSpan.end();
   }
 
-  res.writeHead(401, { 'Content-Type': 'application/json' });
+  return {
+    status: 401,
+    headers: { 'Content-Type': 'application/json' },
+    data: { message: "Unauthorized: please log in" }
+  }
   parentSpan.end();
-  res.end(JSON.stringify({ message: "Unauthorized: please log in" }));
-
 }
 
-export async function post(req, res) {
+export async function POST(req, res) {
+  console.log(req.session);
   const parentSpan = tracer.startSpan('api-create-source');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
-  //console.log("BODY", req.body);
+  const { user } = req.session;
+  const prisma = new PrismaClient()
   const { url } = req.body;
 
-  //console.log("Is there a user?", req.session && req.session.passport && req.session.passport.user);
-  if (req.session && req.session.passport && req.session.passport.user) {
-    const connection = await db.getConnection(NODE_ENV);
-    const { Subject, Post } = db.entities;
-
-    let subjectRepo = connection.getRepository(Subject);
-
+  if (user) {
     // Use existing subject if possible.
-    let subject = await subjectRepo.findOne({ where: { url: url, user: req.session.passport.user.id } });
+    let subject = await prisma.subjects.findFirst({ where: { url: url, submitter_id: user.id } });
     if (!subject) {
-      subject = new Subject(req.session.passport.user, url);
-      subject.uuid = uuid.v4(); // this needs to be automated.
-
+      let metadata;
       try {
-        subject.metadata = await subject.extractMetadata();
+        metadata = await extractMetadata(url);
       } catch (error) {
         console.log(`error extracting metadata: ${JSON.stringify(error)}`);
       }
 
       const saveSubjectSpan = tracer.startSpan("db-save-subject", undefined, ctx);
-      let subjectSaved = await subjectRepo.save(subject);
-      saveSubjectSpan.setAttribute("id", subjectSaved.id);
+      subject = await prisma.subjects.create({
+        data: {
+          url, metadata, submitter_id: user.id
+        }
+      });
+      saveSubjectSpan.setAttribute("id", subject.id);
       saveSubjectSpan.end();
 
-      const PostRepository = connection.getRepository(Post);
       const getTweetsSpan = tracer.startSpan("twitter-get-tweets", undefined, ctx);
-      const response = await search(subject.url, req.session.passport.user);
+      const response = await search(subject.url, req.session.user);
       console.log(JSON.stringify(response));
       const tweets = response.data;
 

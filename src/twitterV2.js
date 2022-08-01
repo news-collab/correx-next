@@ -2,6 +2,8 @@ import Twitter from "twitter-v2";
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+export const defaultAvatarUrl = "http://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
+
 export function newTwitterClient(userToken, userTokenSecret) {
   const clientConfig = {
     consumer_key: process.env.TWITTER_CONSUMER_KEY,

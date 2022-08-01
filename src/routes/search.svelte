@@ -1,17 +1,25 @@
 <script context="module">
-	export async function preload({ params, query }, { passport }) {
-		if (passport && passport.user) {
+	export async function load({ params, fetch, session }) {
+		if (session.user && session.user.id) {
 			const path = '/subjects.json';
-			const res = await this.fetch(path, { credentials: 'include' });
-			const data = await res.json();
+			const response = await fetch(path, { credentials: 'include' });
+			const data = await response.json();
 
-			if (res.status == 200) {
-				return { subjects: data.subjects };
-			} else {
-				this.error(res.status, data.message);
+			if (response.status == 200) {
+				return {
+					status: 200,
+					props: {
+						subjects: data.subjects
+					}
+				};
 			}
-		} else {
-			return { subjects: [] };
+
+			return {
+				status: 500,
+				props: {
+					subjects: []
+				}
+			};
 		}
 	}
 </script>

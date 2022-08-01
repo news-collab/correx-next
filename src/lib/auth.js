@@ -9,17 +9,20 @@ export const appAuth = new SvelteKitAuth({
     new RedditOAuth2Provider({
       apiKey: import.meta.env.VITE_REDDIT_API_KEY,
       apiSecret: import.meta.env.VITE_REDDIT_API_SECRET,
-      profile(profile) {
+      duration: "permanent",
+      profile(profile, tokens) {
+        console.log('tokens', tokens)
         const slim = RedditOAuth2Provider.profileHandler(profile);
-        return { ...slim, provider: "reddit" };
+        return { ...slim, tokens: tokens, provider: "reddit" };
       },
     }),
     new TwitterV2AuthProvider({
       apiKey: import.meta.env.VITE_TWITTER_API_KEY,
       apiSecret: import.meta.env.VITE_TWITTER_API_SECRET,
-      profile: (profile) => {
+      profile: (profile, tokens) => {
+        console.log(`tokens`, tokens);
         const slim = TwitterV2AuthProvider.profileHandler(profile);
-        return { ...slim, provider: "twitter" };
+        return { ...slim, tokens: { oauth_token: tokens.oauth_token, oauth_token_secret: tokens.oauth_token_secret }, provider: "twitter" };
       },
     }),
   ],
@@ -27,9 +30,6 @@ export const appAuth = new SvelteKitAuth({
     async jwt(token, profile) {
       if (profile?.provider) {
         const { provider, ...account } = profile;
-        console.log(`profile`, profile)
-        console.log(`token`, token);
-
         const prisma = new PrismaClient()
         const providerMap = {
           "twitter": platform.TWITTER,
@@ -58,11 +58,11 @@ export const appAuth = new SvelteKitAuth({
             name: profile.name,
             avatar_url: profile.snoovatar_img,
             reddit_user_id: profile.id,
-            reddit_useername: profile.name
+            reddit_username: profile.name
           }
         }
 
-        // Get user
+        // Get or create user.
         const user = await prisma.users.upsert({
           create: platformFields,
           update: platformFields,
@@ -71,6 +71,8 @@ export const appAuth = new SvelteKitAuth({
 
         token = {
           ...token,
+          accessToken: profile.access_token,
+          accessTokenExpiration: profile.expires_in,
           user: {
             ...user,
             ...(token.user ?? {}),
@@ -78,7 +80,6 @@ export const appAuth = new SvelteKitAuth({
           },
         };
       }
-
       return token;
     },
   },
