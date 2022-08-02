@@ -28,6 +28,10 @@ db-shell: ## Start a shell in the db container.
 db-migrate: ## Migrate the database.
 	npm run migration:dev
 
+db-rm:
+	docker rm -f $(db_name)
+	docker volume rm $(db_name)
+
 image:
 	docker buildx rm $(project_name) || true
 	docker buildx create --name $(project_name) --driver docker-container --use

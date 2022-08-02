@@ -58,7 +58,6 @@ export class TwitterV2AuthProvider extends TwitterAuthProvider {
     return Object.fromEntries([...(new URLSearchParams(await response.text()))]);
   }
   async getUserProfile({ oauth_token, oauth_token_secret, ...account }) {
-    console.log(arguments);
     let user = {};
     try {
       // Need to apply for elevated access - not tested yet
