@@ -1,14 +1,23 @@
 <script>
 	import { session } from '$app/stores';
+	import { signOut as authSignOut } from 'sk-auth/client';
+	import { goto } from '$app/navigation';
+
 	let logoutModal = {
 		open: false,
 		showModalBackdrop: true,
 		onClosed: false
 	};
+
+	function logout() {
+		authSignOut().then(session.set);
+		logoutModal.open = false;
+		goto(`/about`, { replaceState: true });
+	}
 </script>
 
 <div
-	class:open={logoutModal.open == true}
+	class:open={logoutModal.open === true}
 	class="modal logout-modal"
 	id="logoutModal"
 	tabindex="-1"
@@ -26,7 +35,7 @@
 				<p>Are you sure you would like to logout?</p>
 			</div>
 			<div class="modal-footer">
-				<a href="/auth/logout" class="btn btn-danger" role="button" aria-pressed="true">Logout</a>
+				<button class="btn btn-danger" on:click={logout}>Logout</button>
 				<button
 					type="button"
 					class="btn btn-secondary"
