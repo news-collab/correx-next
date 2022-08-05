@@ -11,7 +11,6 @@ export const appAuth = new SvelteKitAuth({
       apiSecret: import.meta.env.VITE_REDDIT_API_SECRET,
       duration: "permanent",
       profile(profile, tokens) {
-        console.log('tokens', tokens)
         const slim = RedditOAuth2Provider.profileHandler(profile);
         return { ...slim, tokens: tokens, provider: "reddit" };
       },
@@ -20,7 +19,6 @@ export const appAuth = new SvelteKitAuth({
       apiKey: import.meta.env.VITE_TWITTER_API_KEY,
       apiSecret: import.meta.env.VITE_TWITTER_API_SECRET,
       profile: (profile, tokens) => {
-        console.log(`tokens`, tokens);
         const slim = TwitterV2AuthProvider.profileHandler(profile);
         return { ...slim, tokens: { oauth_token: tokens.oauth_token, oauth_token_secret: tokens.oauth_token_secret }, provider: "twitter" };
       },
@@ -38,6 +36,7 @@ export const appAuth = new SvelteKitAuth({
 
         let platformWhere;
         let platformFields;
+        let tokens;
         if (profile.provider === "twitter") {
           platformWhere = {
             twitter_user_id: profile.id
@@ -48,6 +47,10 @@ export const appAuth = new SvelteKitAuth({
             twitter_user_id: profile.id,
             twitter_username: profile.screen_name
           }
+          tokens = {
+            oauth_token: profile.oauth_token,
+            oauth_token_secret: profile.oauth_token_secret
+          };
         }
 
         if (profile.provider === "reddit") {
@@ -60,6 +63,10 @@ export const appAuth = new SvelteKitAuth({
             reddit_user_id: profile.id,
             reddit_username: profile.name
           }
+          tokens = {
+            access_token: profile.access_token,
+            refresh_token: profile.refresh_token
+          };
         }
 
         // Get or create user.
@@ -71,6 +78,7 @@ export const appAuth = new SvelteKitAuth({
 
         token = {
           ...token,
+          tokens,
           accessToken: profile.access_token,
           accessTokenExpiration: profile.expires_in,
           user: {

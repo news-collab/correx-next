@@ -37,8 +37,6 @@
 </svelte:head>
 
 <h1>Correx</h1>
-{JSON.stringify($session.user.connections.twitter.tokens)}
-{JSON.stringify($session.user.connections.reddit.tokens)}
 
 <button on:click={signOut}>sign out</button>
 
