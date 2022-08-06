@@ -4,8 +4,8 @@
 	import { goto } from '$app/navigation';
 
 	const tokens = {
-		twitter: $session.user.connections.twitter.tokens,
-		reddit: $session.user.connections.reddit.tokens
+		twitter: $session?.user?.connections?.twitter?.tokens,
+		reddit: $session?.user?.connections?.reddit?.tokens
 	};
 
 	async function requestCookie(tokens) {

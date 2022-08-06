@@ -1,3 +1,5 @@
+import { serialize } from "cookie";
+
 export async function POST({ request }) {
 
   const tokens = await request.json();
@@ -5,7 +7,7 @@ export async function POST({ request }) {
   return {
     status: 302,
     headers: {
-      'set-cookie': [`tokens=${JSON.stringify(tokens)}`],
+      'set-cookie': [serialize('tokens', JSON.stringify(tokens), { path: '/' })],
     },
   };
 }

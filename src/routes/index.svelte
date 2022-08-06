@@ -29,6 +29,10 @@
 		if (!newVisitorCookie) {
 			createNewVisitorCookie();
 		}
+
+		await fetch(`${import.meta.env.VITE_BASE_URL}/api/meow.json`, {
+			credentials: 'include'
+		});
 	});
 </script>
 
