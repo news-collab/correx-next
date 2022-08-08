@@ -1,9 +1,10 @@
 <script context="module">
 	export async function load({ params, fetch, session }) {
 		if (session.user && session.user.id) {
-			const path = '/subjects.json';
+			const path = '/api/subjects.json';
 			const response = await fetch(path, { credentials: 'include' });
-			const data = await response.json();
+			const data = {};
+			//const data = await response.json();
 
 			if (response.status == 200) {
 				return {

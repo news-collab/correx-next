@@ -8,7 +8,12 @@
 		reddit: $session?.user?.connections?.reddit?.tokens
 	};
 
-	async function requestCookie(tokens) {
+	const newSessionRequest = {
+		userId: $session?.user?.id,
+		tokens
+	};
+
+	async function requestCookie() {
 		// Default options are marked with *
 		const response = await fetch(`${import.meta.env.VITE_BASE_URL}/session/new.json`, {
 			method: 'POST',
@@ -17,13 +22,13 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(tokens) // body data type must match "Content-Type" header
+			body: JSON.stringify(newSessionRequest) // body data type must match "Content-Type" header
 		});
 		return response.json(); // parses JSON response into native JavaScript objects
 	}
 
 	async function onload() {
-		await requestCookie(tokens);
+		await requestCookie();
 		goto('/');
 	}
 

@@ -1,22 +1,32 @@
-import { getTweets } from '../twitter';
-import { search } from '../twitterV2';
+import { parse } from "cookie";
+import { getTweets } from '../../twitter';
+import { search } from '../../twitterV2';
 import opentelemetry from '@opentelemetry/api';
 import { PrismaClient } from '@prisma/client'
 import { session } from '$app/stores';
 import { extractMetadata } from "$lib/meta";
 
-
 const tracer = opentelemetry.trace.getTracer('correx');
 
-export async function GET(things) {
-  console.log('things', things)
-  const { user } = locals;
+export async function GET(event) {
+  const cookies = parse(event.request.headers.get('cookie') || '');
+  console.log(`session`, cookies.session);
+  const userSession = cookies.session ? JSON.parse(cookies.session) : null;
 
-  console.log(session);
+  console.log(`userSession`, userSession);
+
+  const prisma = new PrismaClient()
+
+  const user = await prisma.users.findUnique({
+    where: {
+      id: userSession.userId,
+    }
+  });
+
+  console.log(`user`, user);
   const parentSpan = tracer.startSpan('api-get-subjects');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
 
-  const prisma = new PrismaClient()
 
   if (user) {
     const getSubjectsSpan = tracer.startSpan("db-get-subjects", undefined, ctx);
@@ -50,6 +60,7 @@ export async function POST(req, res) {
   const prisma = new PrismaClient()
   const { url } = req.body;
 
+
   if (user) {
     // Use existing subject if possible.
     let subject = await prisma.subjects.findFirst({ where: { url: url, submitter_id: user.id } });
@@ -58,7 +69,7 @@ export async function POST(req, res) {
       try {
         metadata = await extractMetadata(url);
       } catch (error) {
-        console.log(`error extracting metadata: ${JSON.stringify(error)}`);
+        console.log(`error extracting metadata: ${JSON.stringify(error)} `);
       }
 
       const saveSubjectSpan = tracer.startSpan("db-save-subject", undefined, ctx);
