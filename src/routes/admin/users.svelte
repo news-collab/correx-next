@@ -1,19 +1,25 @@
 <script context="module">
 	import { guardAdminRoute } from '../../auth';
 
-	export async function preload({ params, query }, session) {
-		console.log(session);
-		await guardAdminRoute(session.passport.user);
+	export async function load({ params, query, session, fetch }) {
+		await guardAdminRoute(session.user);
 
-		const path = `users.json`;
-		const res = await this.fetch(path);
-		const data = await res.json();
+		const path = `api/users.json`;
+		const res = await fetch(`${import.meta.env.VITE_BASE_URL}/${path}`);
+		const users = await res.json();
 
 		if (res.status === 200) {
-			return { users: data.users };
-		} else {
-			this.error(res.status, data.message);
+			return {
+				status: 200,
+				props: {
+					users
+				}
+			};
 		}
+
+		return {
+			status: 500
+		};
 	}
 </script>
 
@@ -27,7 +33,6 @@
 		let index = users.findIndex((u) => u.id === user.id);
 		users.splice(index, 1, user);
 		users = [...users];
-		console.log(users);
 	}
 
 	async function updateUserRole(e, id) {
@@ -60,9 +65,9 @@
 				</tr>
 				{#each users as user}
 					<tr>
-						<td>{user.screenname}</td>
+						<td>{user.name}</td>
 						<td>
-							{#if $session.passport.user.id === user.id}
+							{#if $session.user.id === user.id}
 								{user.admin === true ? 'Admin' : 'User'}
 							{:else}
 								<select name="role" on:change={(e) => updateUserRole(e, user.id)}>

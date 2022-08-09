@@ -18,7 +18,7 @@ export async function GET() {
 
   //const userRepo = connection.getRepository(User);
   const getUsersSpan = tracer.startSpan("db-get-users", undefined, ctx);
-  const users = await prisma.user.findMany();
+  const users = await prisma.users.findMany();
   getUsersSpan.setAttribute("users", users.length);
   getUsersSpan.end();
   //res.writeHead(200, { 'Content-Type': 'application/json' });

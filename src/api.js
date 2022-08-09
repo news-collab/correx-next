@@ -26,7 +26,7 @@ export async function updateUser(user) {
 }
 
 export async function createUser(user) {
-  return await fetch("/users.json", {
+  return await fetch("/api/users.json", {
     method: "POST",
     body: JSON.stringify({ user }),
     headers: {
