@@ -1,5 +1,5 @@
 /** @type {import('@sveltejs/kit').Handle} */
-import { appAuth } from "$lib/auth";
+import { appAuth } from "$lib/auth/auth";
 import { session } from "$app/stores";
 
 export const handle = async ({ event, resolve }) => {

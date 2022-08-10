@@ -1,5 +1,5 @@
 <script context="module">
-	import { guardAdminRoute } from '../../auth';
+	import { guardAdminRoute } from '../../lib/auth/guards';
 
 	export async function load({ params, query, session, fetch }) {
 		await guardAdminRoute(session.user);

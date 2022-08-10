@@ -1,6 +1,6 @@
 import { SvelteKitAuth } from "sk-auth";
 import { RedditOAuth2Provider } from "sk-auth/providers";
-import { TwitterV2AuthProvider } from "./twitterv2";
+import { TwitterV2AuthProvider } from "./providers/twitterv2";
 import { PrismaClient, platform } from '@prisma/client'
 
 export const appAuth = new SvelteKitAuth({

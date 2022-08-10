@@ -1,3 +1,3 @@
-import { appAuth } from "$lib/auth";
+import { appAuth } from "$lib/auth/auth";
 
 export const { GET, POST } = appAuth;
