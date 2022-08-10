@@ -1,29 +1,22 @@
-import { parse } from "cookie";
 import { getTweets } from '../../twitter';
 import { search } from '../../twitterV2';
 import opentelemetry from '@opentelemetry/api';
 import { PrismaClient } from '@prisma/client'
 import { session } from '$app/stores';
 import { extractMetadata } from "$lib/meta";
+import { getUserSession } from "$lib/session";
 
 const tracer = opentelemetry.trace.getTracer('correx');
 
 export async function GET(event) {
-  const cookies = parse(event.request.headers.get('cookie') || '');
-  console.log(`session`, cookies.session);
-  const userSession = cookies.session ? JSON.parse(cookies.session) : null;
-
-  console.log(`userSession`, userSession);
-
+  const userSession = getUserSession(event.request.headers);
   const prisma = new PrismaClient()
-
   const user = await prisma.users.findUnique({
     where: {
       id: userSession.userId,
     }
   });
 
-  console.log(`user`, user);
   const parentSpan = tracer.startSpan('api-get-subjects');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
 
@@ -53,6 +46,14 @@ export async function GET(event) {
 }
 
 export async function POST(req, res) {
+  const userSession = getUserSession(event.request.headers);
+  const prisma = new PrismaClient()
+  const user = await prisma.users.findUnique({
+    where: {
+      id: userSession.userId,
+    }
+  });
+
   console.log(req.session);
   const parentSpan = tracer.startSpan('api-create-source');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
