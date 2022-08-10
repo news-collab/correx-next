@@ -1,4 +1,3 @@
-import { parse } from "cookie";
 import { getTweets } from '../../twitter';
 import { search } from '../../twitterV2';
 import opentelemetry from '@opentelemetry/api';
@@ -47,6 +46,14 @@ export async function GET(event) {
 }
 
 export async function POST(req, res) {
+  const userSession = getUserSession(event.request.headers);
+  const prisma = new PrismaClient()
+  const user = await prisma.users.findUnique({
+    where: {
+      id: userSession.userId,
+    }
+  });
+
   console.log(req.session);
   const parentSpan = tracer.startSpan('api-create-source');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
