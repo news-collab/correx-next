@@ -28,7 +28,7 @@
 <script>
 	import MyRecentSubjects from '@/components/subjects/MyRecent.svelte';
 	import { goto } from '$app/navigation';
-	import { isURL } from '../validation';
+	import { isURL } from '$lib/validation';
 
 	let searchForm = {
 		url: '',
@@ -52,7 +52,7 @@
 		if (!isURL(searchForm.url)) {
 			searchForm.errors.push('Please enter a valid URL');
 		} else {
-			const response = await fetch('/subjects.json', {
+			const response = await fetch('/api/subjects.json', {
 				method: 'POST',
 				body: JSON.stringify({ url: searchForm.url }),
 				headers: {
@@ -62,7 +62,7 @@
 
 			if (response.ok) {
 				const subject = await response.json();
-				goto(`subject/${subject.uuid}`);
+				goto(`subject/${subject.id}`);
 			} else if (response.status == 500) {
 				searchFormModal.open = true;
 			} else {

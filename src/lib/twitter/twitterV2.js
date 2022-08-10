@@ -6,8 +6,8 @@ export const defaultAvatarUrl = "http://abs.twimg.com/sticky/default_profile_ima
 
 export function newTwitterClient(userToken, userTokenSecret) {
   const clientConfig = {
-    consumer_key: process.env.TWITTER_CONSUMER_KEY,
-    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+    consumer_key: import.meta.env.VITE_TWITTER_API_KEY,
+    consumer_secret: import.meta.env.VITE_TWITTER_API_SECRET,
     access_token_key: userToken,
     access_token_secret: userTokenSecret,
   };
@@ -30,8 +30,8 @@ export async function getTweets(postURL, user) {
   }
 }
 
-export async function search(url, user) {
-  const client = newTwitterClient(user.token, user.tokenSecret);
+export async function search(url, tokens) {
+  const client = newTwitterClient(tokens.oauthToken, tokens.oauthTokenSecret);
 
   const query = encodeURIComponent(`url:"${url}" -is:retweet`);
   const tweetFields = ["created_at", "public_metrics"];
