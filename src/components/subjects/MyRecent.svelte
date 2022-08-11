@@ -4,8 +4,8 @@
 
 	export let subjects = [];
 	subjects = subjects.filter((word) => moment().diff(word.createdAt, 'days') < 8);
-	async function handleSubjectClick(uuid) {
-		await goto(`/subject/${uuid}`);
+	async function handleSubjectClick(id) {
+		await goto(`/subject/${id}`);
 	}
 </script>
 
@@ -21,7 +21,7 @@
 		{#each subjects as subject}
 			<tr>
 				<td class="subject">
-					<div class="title text-truncate" on:click={handleSubjectClick(subject.uuid)}>
+					<div class="title text-truncate" on:click={handleSubjectClick(subject.id)}>
 						{subject.metadata && subject.metadata.title ? subject.metadata.title : subject.url}
 					</div>
 					{#if subject.metadata && subject.metadata.title}
