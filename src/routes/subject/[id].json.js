@@ -1,49 +1,46 @@
-import fs from 'fs';
-import db from '../../db.ts';
-const { NODE_ENV } = process.env;
-const serverRoot = __dirname;
+import { PrismaClient } from '@prisma/client'
 import opentelemetry from '@opentelemetry/api';
 const tracer = opentelemetry.trace.getTracer('correx');
 
-export async function get(req, res) {
+export async function GET({ request, params }) {
+  const prisma = new PrismaClient()
   const parentSpan = tracer.startSpan('api-get-source');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
 
-  const { Subject, Post, User } = db.entities;
-  const connection = await db.getConnection(NODE_ENV);
-  const SubjectRepository = connection.getRepository(Subject);
-  const PostRepository = connection.getRepository(Post);
-
-  const { id } = req.params;
-
+  const { id } = params;
   const getSubjectSpan = tracer.startSpan("db-get-subject", undefined, ctx);
-  const subject = await SubjectRepository.findOne({ where: { uuid: id }, relations: ["posts"] });
+  const subject = await prisma.subjects.findUnique({ where: { id }, include: { posts: true } });
+
   getSubjectSpan.setAttribute("id", subject.id);
   getSubjectSpan.setAttributes("posts_count", subject.posts.length);
   getSubjectSpan.end();
 
+  parentSpan.end();
+
   if (subject) {
-    let content = JSON.stringify({
+    let content = {
       id: id,
       subject: subject,
-      title: subject.title(),
+      title: subject.metadata?.title,
       twitter: subject.posts
-    });
+    };
 
-    res.writeHead(200, {
-      'Content-Type': 'application/json'
-    });
+    return {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: content
+    };
 
-    res.end(content);
-  } else {
-    res.writeHead(404, {
-      'Content-Type': 'application/json'
-    });
-
-    res.end(JSON.stringify({
-      message: `Not found`
-    }));
   }
 
-  parentSpan.end();
+  return {
+    status: 404,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: {
+      message: `Not found`
+    }
+  };
+
 }

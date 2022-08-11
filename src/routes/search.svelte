@@ -1,7 +1,7 @@
 <script context="module">
 	export async function load({ params, fetch, session }) {
 		if (session.user && session.user.id) {
-			const path = '/api/subjects.json';
+			const path = '/subjects.json';
 			const response = await fetch(path, { credentials: 'include' });
 			const data = {};
 			//const data = await response.json();
@@ -52,7 +52,7 @@
 		if (!isURL(searchForm.url)) {
 			searchForm.errors.push('Please enter a valid URL');
 		} else {
-			const response = await fetch('/api/subjects.json', {
+			const response = await fetch('/subjects.json', {
 				method: 'POST',
 				body: JSON.stringify({ url: searchForm.url }),
 				headers: {
