@@ -22,8 +22,8 @@ export async function GET(event) {
 
   if (user) {
     const getSubjectsSpan = tracer.startSpan("db-get-subjects", undefined, ctx);
-    const subjects = prisma.subjects.findMany({
-      submitter_id: user.id
+    const subjects = await prisma.subjects.findMany({
+      where: { submitter_id: user.id }
     });
     getSubjectsSpan.setAttribute("subjects", subjects.length);
     getSubjectsSpan.end();

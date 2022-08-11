@@ -3,14 +3,12 @@
 		if (session.user && session.user.id) {
 			const path = '/subjects.json';
 			const response = await fetch(path, { credentials: 'include' });
-			const data = {};
-			//const data = await response.json();
 
 			if (response.status == 200) {
 				return {
 					status: 200,
 					props: {
-						subjects: data.subjects
+						subjects: await response.json()
 					}
 				};
 			}
