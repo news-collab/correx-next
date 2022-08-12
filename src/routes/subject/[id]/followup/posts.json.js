@@ -1,83 +1,89 @@
-import db from '../../../../db.ts';
-import { getTweets } from "@/twitterV2";
+import { PrismaClient, platform } from '@prisma/client'
+import { getTweets } from "$lib/twitter/twitterV2";
+import { getUserSession } from "$lib/session";
 
-const { NODE_ENV } = process.env;
-if (NODE_ENV === undefined) { throw "NODE_ENV must be defined"; }
-//console.log(uuid);
+export async function GET({ request, params }) {
+  const userSession = getUserSession(request.headers);
+  const prisma = new PrismaClient()
+  const user = await prisma.users.findUnique({
+    where: {
+      id: userSession.userId,
+    }
+  });
 
-export async function get(req, res) {
-  if (req.session && req.session.passport && req.session.passport.user) {
-    const { id } = req.params;
-    const user = req.session.passport.user;
+  if (user) {
+    const { id } = params;
 
-    const { Subject, Post, User } = db.entities;
-    const connection = await db.getConnection(NODE_ENV);
-    const SubjectRepository = connection.getRepository(Subject);
-    const subject = await SubjectRepository.findOne({ where: { uuid: id }, relations: ["posts"] });
+    const subject = await prisma.subjects.findUnique({ where: { id }, include: { posts: true } });
 
-    res.end(JSON.stringify({
-      // data should go here.
-      posts: subject.posts
-    }));
+    return {
+      status: 200,
+      body: {
+        posts: subject.posts
+      }
+    };
 
-  } else {
-    res.writeHead(401, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ message: "Unauthorized: please log in" }));
+  }
+
+  return {
+    status: 401
   }
 }
 
-export async function post(req, res) {
-  // only allow posting from authenticated users
-  if (req.session && req.session.passport && req.session.passport.user) {
-    const user = req.session.passport.user;
-    // get the subject id
-    const { id } = req.params;
-    const postData = req.body.posts;
-    if (postData && postData.length > 0) {
+export async function POST({ request, params }) {
+  const userSession = getUserSession(request.headers);
+  const prisma = new PrismaClient()
+  const user = await prisma.users.findUnique({
+    where: {
+      id: userSession.userId,
+    }
+  });
+
+  if (user) {
+    const { id } = params;
+    const postData = await request.json();
+
+    if (postData?.posts?.length > 0) {
       // get the subject
-      const { Subject, Post, User } = db.entities;
-      const connection = await db.getConnection(NODE_ENV);
-      const SubjectRepository = connection.getRepository(Subject);
-      const subject = await SubjectRepository.findOne({
+      const subject = await prisma.subjects.findUnique({
         where: {
-          uuid: id,
-          user: user // make sure the user has access to it.
+          id,
         },
-        relations: ["posts"]
+        include: {
+          posts: true
+        }
       });
 
       // get the posts 
-      const postIds = postData.map(post => post.id);
+      const posts = postData.posts;
+      const postIds = posts.map(post => post.id);
       let postsToUpdate = subject.posts.filter(post => postIds.find(id => id == post.id));
       // update the posts
       postsToUpdate.forEach(post => {
-        const data = postData.find(d => d.id == post.id);
+        const data = posts.find(d => d.id == post.id);
         Object.entries(data).forEach(([key, value]) => { post[key] = value; });
-      });
-      // save the posts
-      const PostRepository = connection.getRepository(Post);
-      const savedPosts = await PostRepository.save(postsToUpdate);
-
-      if (savedPosts) {
-        res.writeHead(201, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ posts: postsToUpdate }));
-      } else {
-        res.writeHead(500, {
-          'Content-Type': 'application/json'
+        // Update post.
+        prisma.posts.update({
+          where: {
+            id: post.id
+          },
+          data: post
         });
-        res.end(JSON.stringify({
-          message: `One of the two of us messed up`,
-          log: subject
-        }));
-      }
-    } else {
-      console.log(`params: ${JSON.stringify(req.params)}`);
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ message: 'Submitted data must include a "posts" key.' }));
+      });
+
+      return {
+        status: 200,
+        body: {
+          posts: postsToUpdate
+        }
+      };
     }
-  } else {
-    res.writeHead(401, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ message: "Unauthorized: please log in" }));
+  }
+
+  return {
+    status: 401,
+    headers: { 'Content-Type': 'application/json' },
+    body: { message: "Unauthorized: please log in" }
   }
 
 }
