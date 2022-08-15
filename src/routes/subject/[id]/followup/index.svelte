@@ -25,7 +25,6 @@
 
 	export let data = {};
 	export let source_id;
-	let platformId;
 	let message = ``;
 	const defaultMessage = `Type your message to people you want to send a correction to their followers`;
 	let posts = {
@@ -34,7 +33,6 @@
 	let replySheet = [];
 
 	onMount(() => {
-		platformId = data.posts;
 		posts.twitter = data.twitter.map((p) => p.data);
 		replySheet = data.twitter
 			.filter((p) => p.starred)
@@ -48,6 +46,7 @@
 				};
 				return row;
 			});
+		console.log('replySheet', replySheet);
 	});
 
 	function copyTemplateTextToReplies() {

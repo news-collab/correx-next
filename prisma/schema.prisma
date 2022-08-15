@@ -16,6 +16,7 @@ model posts {
   data         Json
   subject_id   String?
   user_id      String?
+  starred      Boolean  @default(false)
 
   created_at DateTime? @default(now()) @db.Timestamp(6)
   updated_at DateTime? @default(now()) @db.Timestamp(6)

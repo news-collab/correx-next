@@ -42,24 +42,24 @@ export async function POST({ request, params }) {
   if (user) {
     const { id } = params;
     const postData = await request.json();
-
+    console.log(`postData`, postData)
     if (postData?.posts?.length > 0) {
       // get the subject
-      const subject = await prisma.subjects.findUnique({
+      /*const subject = await prisma.subjects.findUnique({
         where: {
           id,
         },
         include: {
           posts: true
         }
-      });
+      });*/
 
-      // get the posts 
+      // Get posts and update their starred status.
       const posts = postData.posts;
       const postIds = posts.map(post => post.id);
-      let postsToUpdate = subject.posts.filter(post => postIds.find(id => id == post.id));
+      //let postsToUpdate = subject.posts.filter(post => postIds.find(id => id == post.id));
       // update the posts
-      postsToUpdate.forEach(post => {
+      /*postsToUpdate.forEach(post => {
         const data = posts.find(d => d.id == post.id);
         Object.entries(data).forEach(([key, value]) => { post[key] = value; });
         // Update post.
@@ -69,12 +69,32 @@ export async function POST({ request, params }) {
           },
           data: post
         });
+      });*/
+
+      // Since we really only want to update starred status, just mark it for each post.
+      await prisma.posts.updateMany({
+        where: {
+          id: { in: postIds }
+        },
+        data: {
+          starred: true
+        }
+      });
+
+      // Now get all of the subject's posts.
+      const subject = await prisma.subjects.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          posts: true
+        }
       });
 
       return {
         status: 200,
         body: {
-          posts: postsToUpdate
+          posts: subject.posts
         }
       };
     }
