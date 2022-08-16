@@ -60,7 +60,6 @@ export class TwitterV2AuthProvider extends TwitterAuthProvider {
   async getUserProfile({ oauth_token, oauth_token_secret, ...account }) {
     let user = {};
     try {
-      // Need to apply for elevated access - not tested yet
       user = await (new TwitterApi({
         appKey: this.config.apiKey,
         appSecret: this.config.apiSecret,
@@ -68,8 +67,8 @@ export class TwitterV2AuthProvider extends TwitterAuthProvider {
         accessSecret: oauth_token_secret,
       })).readOnly.currentUser();
     } catch (e) {
-      console.log('oh my, there was a problem', e)
-      // 403
+      console.error('could not get current user: ', e)
+      return {};
     }
 
     return { ...user, ...account, oauth_token, oauth_token_secret };
