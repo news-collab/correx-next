@@ -1,7 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { session } from '$app/stores';
 	import { signOut as authSignOut } from 'sk-auth/client';
 	import Twitter from 'twitter-v2';
 
@@ -14,7 +13,7 @@
 	}
 
 	function signOut() {
-		authSignOut().then(session.set);
+		authSignOut();
 	}
 
 	onMount(async () => {

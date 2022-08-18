@@ -1,5 +1,5 @@
 <script>
-	import { session } from '$app/stores';
+	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import FaReddit from 'svelte-icons/fa/FaReddit.svelte';
 	import FaTwitterSquare from 'svelte-icons/fa/FaTwitterSquare.svelte';
