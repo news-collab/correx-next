@@ -12,7 +12,7 @@
 	function logout() {
 		authSignOut().then(session.set);
 		logoutModal.open = false;
-		goto(`/about`, { replaceState: true });
+		goto(`/login`, { replaceState: true });
 	}
 </script>
 
