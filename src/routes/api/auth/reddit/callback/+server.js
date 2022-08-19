@@ -1,6 +1,6 @@
 import { serialize } from "cookie";
 import { error } from '@sveltejs/kit';
-import { PrismaClient, platform } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import { Client } from "$lib/reddit/client";
 
 /** @type {import('../../../../../../.svelte-kit/types/src/routes/api/auth/reddit/authorize/$types').RequestHandler} */
@@ -74,6 +74,6 @@ export async function GET({ url }) {
 
     return new Response(null, { status, headers });
   } catch (e) {
-    throw error(500, `could not retrieve Reddit tokens: ${e}`);
+    throw error(500, `could not authenticate with Reddit: ${e}`);
   }
 }

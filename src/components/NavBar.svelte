@@ -10,8 +10,8 @@
 	};
 
 	function logout() {
-		authSignOut();
-		console.log('do stuff');
+		document.cookie = 'session= ; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+
 		logoutModal.open = false;
 		goto('/login');
 	}

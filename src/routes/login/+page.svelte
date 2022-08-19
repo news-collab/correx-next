@@ -30,19 +30,9 @@
 
 	<div class="reddit">
 		<h1>Reddit</h1>
-		<button
-			on:click={() => {
-				goto('/api/auth/reddit/authorize?redirect=/');
-			}}
-		>
-			<div class="icon">
-				<FaReddit />
-			</div>
-			<span>Login</span>
-		</button>
-		{#if $page.data.userSession && $page.data.userSession.tokens && $page.data.userSession.tokens.reddit}
-			<p>Signed in as:</p>
-			{$page.data.user.name}
+
+		{#if $page.data.session.redditTokens}
+			<p>Signed in as "{$page.data.user.name}".</p>
 		{:else}
 			<p>Signup or login with your Reddit account.</p>
 			<button
