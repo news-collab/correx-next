@@ -88,9 +88,7 @@
 
 							<ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdown">
 								<li>
-									<a class="dropdown-item" href="https://www.twitter.com/{$page.data.user.name}"
-										>@{$page.data.user.name}</a
-									>
+									<a class="dropdown-item" href="/login">@{$page.data.user.name}</a>
 								</li>
 								{#if true}
 									<li>
