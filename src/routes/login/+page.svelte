@@ -3,21 +3,21 @@
 	import { goto } from '$app/navigation';
 	import FaReddit from 'svelte-icons/fa/FaReddit.svelte';
 	import FaTwitterSquare from 'svelte-icons/fa/FaTwitterSquare.svelte';
+	console.log($page.data);
 </script>
 
 <div class="login">
 	<div class="twitter">
 		<h1>Twitter</h1>
-		{#if $session.user && $session.user.connections && $session.user.connections.twitterV2}
+		{#if $page.data.userSession && $page.data.userSession.tokens && $page.data.userSession.tokens.twitter}
 			<p>Signed in as:</p>
-			{JSON.stringify($session.user.connections)}
 
-			{$session.user.connections.twitterV2.screenname}
+			{$page.data.user.name}
 		{:else}
 			<p>Signup or login with your Twitter account.</p>
 			<button
 				on:click={() => {
-					goto('/api/auth/signin/twitter?redirect=/session/new');
+					goto('/api/auth/reddit/authorize?redirect=/api/auth/reddit/callback');
 				}}
 			>
 				<div class="icon">
@@ -30,14 +30,24 @@
 
 	<div class="reddit">
 		<h1>Reddit</h1>
-		{#if $session.user && $session.user.connections && $session.user.connections.reddit}
+		<button
+			on:click={() => {
+				goto('/api/auth/reddit/authorize?redirect=/');
+			}}
+		>
+			<div class="icon">
+				<FaReddit />
+			</div>
+			<span>Login</span>
+		</button>
+		{#if $page.data.userSession && $page.data.userSession.tokens && $page.data.userSession.tokens.reddit}
 			<p>Signed in as:</p>
-			{$session.user.connections.reddit.name}
+			{$page.data.user.name}
 		{:else}
 			<p>Signup or login with your Reddit account.</p>
 			<button
 				on:click={() => {
-					goto('/api/auth/signin/reddit?redirect=/session/new');
+					goto('/api/auth/reddit/authorize?redirect=/');
 				}}
 			>
 				<div class="icon">
