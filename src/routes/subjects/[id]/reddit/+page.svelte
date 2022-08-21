@@ -8,8 +8,6 @@
 	const { subject } = data;
 	const { posts } = subject;
 
-	console.log(subject);
-
 	async function saveSelection(item) {
 		const post = item.item.post;
 		post.starred = item.checked;
@@ -23,10 +21,6 @@
 		const saved = await response.json();
 	}
 </script>
-
-<svelte:head>
-	<script src="https://platform.twitter.com/widgets.js" on:load={twttrLoaded}></script>
-</svelte:head>
 
 <h1>
 	{(subject && subject.metadata && subject.metadata.title) || subject.url}
