@@ -21,7 +21,13 @@ export async function createRedditPosts(ctx, submissions, subject, user) {
           title: submission.title,
           permalink: submission.permalink,
           num_comments: submission.num_comments,
-          author: submission.author
+          author: submission.author,
+          ups: submission.ups,
+          downs: submission.downs,
+          upvote_ratio: submission.upvote_ratio,
+          score: submission.score,
+          gilded: submission.gilded,
+
         }
       }
     };

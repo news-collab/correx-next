@@ -11,7 +11,12 @@ export async function GET({ request, params }) {
 
   const { id } = params;
   const getSubjectSpan = tracer.startSpan("db-get-subject", undefined, ctx);
-  const subject = await prisma.subjects.findUnique({ where: { id }, include: { posts: true } });
+  const subject = await prisma.subjects.findUnique({
+    where: { id },
+    include: {
+      posts: true
+    }
+  });
 
   getSubjectSpan.setAttribute("id", subject.id);
   getSubjectSpan.setAttributes("posts_count", subject.posts.length);

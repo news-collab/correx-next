@@ -98,7 +98,7 @@ export async function POST({ request }) {
   const redditClient = new RedditClient(import.meta.env.VITE_REDDIT_API_KEY, import.meta.env.VITE_REDDIT_API_SECRET, session.redditTokens.refreshToken);
   const submissions = await redditClient.searchURL(subject.url);
   const posts = await createRedditPosts(ctx, submissions, subject, user);
-  //console.log(`submissions`, submissions);
+  console.log(`submissions`, submissions);
 
   const headers = { 'Content-Type': 'application/json' };
   const body = JSON.stringify({
