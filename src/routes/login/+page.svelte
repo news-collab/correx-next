@@ -31,7 +31,7 @@
 	<div class="reddit">
 		<h1>Reddit</h1>
 
-		{#if $page.data.session.redditTokens}
+		{#if $page?.data?.session?.redditTokens}
 			<p>Signed in as "{$page.data.user.name}".</p>
 		{:else}
 			<p>Signup or login with your Reddit account.</p>

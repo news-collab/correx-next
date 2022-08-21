@@ -13,4 +13,10 @@ export class Client {
   async getMe() {
     return this.client.getMe();
   }
+
+  async searchURL(url) {
+    return this.client.search({
+      query: `url:${url}`
+    })
+  }
 }

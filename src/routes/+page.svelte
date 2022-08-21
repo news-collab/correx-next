@@ -41,8 +41,6 @@
 
 <h1>Correx</h1>
 
-<button on:click={signOut}>sign out</button>
-
 <style>
 	h1 {
 		text-align: center;

@@ -1,31 +1,16 @@
-<script context="module">
-	export async function load({ params, query, fetch }) {
-		const path = `/subject/${params.id}.json`;
-		const res = await fetch(path);
-		const data = await res.json();
-
-		if (res.status === 200) {
-			return { status: 200, props: { source_id: params.id, data: data } };
-		}
-
-		return {
-			status: 404
-		};
-	}
-</script>
-
 <script>
 	import { onMount, tick } from 'svelte';
 	import { writable } from 'svelte/store';
-	import IoIosArrowForward from 'svelte-icons/io/IoIosArrowForward.svelte';
 	import FaTwitterSquare from 'svelte-icons/fa/FaTwitter.svelte';
-	import Tweet from '../../components/Tweet.svelte';
-	import SelectableTable from '../../components/SelectableTable/SelectableTable.svelte';
-	import BreadCrumbs from '../../components/Source/Breadcrumbs.svelte';
+	import Tweet from '../../../components/Tweet.svelte';
+	import SelectableTable from '../../../components/SelectableTable/SelectableTable.svelte';
+	import BreadCrumbs from '../../../components/Source/Breadcrumbs.svelte';
 
-	export let source_id;
-	export let data = {};
-	export let subject = {};
+	/** @type {import('./$types').PageData} */
+	export let data;
+
+	const { subject } = data;
+
 	let twttrReady = false;
 	let enableTweeting = false;
 	let mode = 'picker';
@@ -53,7 +38,7 @@
 	onMount(async () => {
 		posts.twitter = data.twitter || [];
 		displayTweets = [(posts.twitter[0] || {}).data];
-		subject = data.subject;
+		//subject = data.subject;
 
 		twitter_table_items = posts.twitter.map((post) => {
 			const tweet = post.data;
@@ -82,7 +67,9 @@
 		};
 
 		await tick();
-		const { localStorageWritableJSON } = await import('../../components/writableLocalStorage.ts');
+		const { localStorageWritableJSON } = await import(
+			'../../../components/writableLocalStorage.ts'
+		);
 		myStore = localStorageWritableJSON('myStore');
 		myStore.set('Oh Hi!');
 	});
@@ -110,28 +97,12 @@
 		mode = input;
 	}
 
-	import DebugPanel from '../../components/DebugPanel.svelte';
-	let openDebugPanel = false;
-	function handleKeydown(event) {
-		let key = event.key;
-		let keyCode = event.keyCode;
-		if (keyCode == 27) {
-			console.log('Catching escape');
-			openDebugPanel = !openDebugPanel;
-		}
-	}
-
 	function twttrLoaded() {
 		twttrReady = true;
 		twitter_table_items = twitter_table_items;
 	}
 </script>
 
-<!--
-<svelte:head>
-  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-</svelte:head>
--->
 <svelte:head>
 	<script src="https://platform.twitter.com/widgets.js" on:load={twttrLoaded}></script>
 </svelte:head>
@@ -139,7 +110,7 @@
 <h1>
 	{(subject && subject.metadata && subject.metadata.title) || subject.url}
 </h1>
-<BreadCrumbs id={source_id} active={'results'} />
+<BreadCrumbs id={subject.id} active={'results'} />
 <section>
 	<div class="lists">
 		<!--
@@ -189,13 +160,6 @@
 		</div>
 	{/if}
 </section>
-
-<svelte:window on:keydown={handleKeydown} />
-{#if openDebugPanel}
-	<DebugPanel {dump}>
-		<p>{JSON.stringify(data)}</p>
-	</DebugPanel>
-{/if}
 
 <style>
 	#platform-list {
