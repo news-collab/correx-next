@@ -35,7 +35,7 @@
 
 			if (response.ok) {
 				const { subject } = await response.json();
-				goto(`subjects/${subject.id}`);
+				goto(`subjects/${subject.id}/reddit`);
 			} else if (response.status == 500) {
 				searchFormModal.open = true;
 			} else {
