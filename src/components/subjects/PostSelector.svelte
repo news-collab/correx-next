@@ -16,7 +16,11 @@
 	<tbody>
 		{#each posts as post}
 			<tr>
-				<th scope="row">{post.data.title}</th>
+				<th scope="row"
+					><a href={`https://reddit.com${post.data.permalink}`} target={post.id}
+						>{post.data.title}</a
+					></th
+				>
 				<td>{post.data.score}</td>
 				<td>{post.data.num_comments}</td>
 				<td>{post.data.author.name}</td>

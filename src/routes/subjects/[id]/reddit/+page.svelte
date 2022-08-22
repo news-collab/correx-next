@@ -7,6 +7,7 @@
 
 	const { subject } = data;
 	const { posts } = subject;
+
 	async function saveSelection(item) {
 		const post = item.item.post;
 		post.starred = item.checked;
