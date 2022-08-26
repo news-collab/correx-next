@@ -23,7 +23,7 @@
 	<div on:click={() => navigate('results')} class="segment" class:active={isActive('results')}>
 		Results
 	</div>
-	<div>》</div>
+	<div>&gt;</div>
 	<div on:click={() => navigate('followup')} class="segment" class:active={isActive('followup')}>
 		Followup
 	</div>
