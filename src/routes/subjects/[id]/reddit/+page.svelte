@@ -28,6 +28,3 @@
 <BreadCrumbs id={subject.id} active={'results'} />
 
 <PostSelector {posts} />
-
-<style>
-</style>
