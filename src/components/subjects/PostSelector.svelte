@@ -35,10 +35,16 @@
 	</thead>
 	<tbody>
 		{#each posts as post}
-			<tr on:click={handlePostSelect(post.id)}>
-				<th><input type="checkbox" checked={selected.indexOf(post.id) !== -1} /></th>
+			<tr class="post-row">
+				<th
+					><input
+						type="checkbox"
+						checked={selected.indexOf(post.id) !== -1}
+						on:click={handlePostSelect(post.id)}
+					/></th
+				>
 				<th scope="row" class="submission-title"
-					>{post.data.title}
+					><span on:click={handlePostSelect(post.id)}>{post.data.title}</span>
 					<a class="permalink" href={`https://reddit.com${post.data.permalink}`} target={post.id}
 						><div class="icon"><FaExternalLinkAlt /></div></a
 					></th
@@ -55,6 +61,10 @@
 selected: {selected}
 
 <style>
+	.post-row {
+		cursor: pointer;
+	}
+
 	.submission-title {
 	}
 	.icon {
