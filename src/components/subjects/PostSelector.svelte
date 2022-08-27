@@ -1,24 +1,27 @@
 <script>
 	import FaExternalLinkAlt from 'svelte-icons/fa/FaExternalLinkAlt.svelte';
+	import { updatePost } from '$lib/api';
 
+	export let subjectId = '';
 	export let posts = [];
 	// Sort posts by score.
-	posts.sort((a, b) => b.data.score - a.data.score);
-
-	// Selected posts.
-	let selected = [];
+	$: posts.sort((a, b) => b.data.score - a.data.score);
 
 	// Handle selection of a post.
-	function handlePostSelect(postId) {
-		console.debug(`post selected`, postId);
-		const index = selected.findIndex((p) => p === postId);
-		if (index !== -1) {
-			selected.splice(index, 1);
-		} else {
-			selected.push(postId);
-		}
+	async function handlePostSelect(postId) {
+		const i = posts.findIndex((p) => p.id === postId);
+		const post = posts[i];
+		post.starred = !post.starred;
 
-		selected = [...selected];
+		const updatedPostResponse = await updatePost(post);
+
+		if (updatedPostResponse.ok) {
+			const updatedPost = await updatedPostResponse.json();
+			posts[i] = updatedPost;
+
+			// Reactivity in Svelte is based on assignments.
+			posts = [...posts];
+		}
 	}
 </script>
 
@@ -37,11 +40,7 @@
 		{#each posts as post}
 			<tr class="post-row">
 				<th
-					><input
-						type="checkbox"
-						checked={selected.indexOf(post.id) !== -1}
-						on:click={handlePostSelect(post.id)}
-					/></th
+					><input type="checkbox" checked={post.starred} on:click={handlePostSelect(post.id)} /></th
 				>
 				<th scope="row" class="submission-title"
 					><span on:click={handlePostSelect(post.id)}>{post.data.title}</span>
@@ -57,8 +56,6 @@
 		{/each}
 	</tbody>
 </table>
-
-selected: {selected}
 
 <style>
 	.post-row {

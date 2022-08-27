@@ -9,7 +9,7 @@ export async function GET({ request, params }) {
   const parentSpan = tracer.startSpan('api-get-source');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
 
-  const { id } = params;
+  const { subjectId: id } = params;
   const getSubjectSpan = tracer.startSpan("db-get-subject", undefined, ctx);
   const subject = await prisma.subjects.findUnique({
     where: { id },
