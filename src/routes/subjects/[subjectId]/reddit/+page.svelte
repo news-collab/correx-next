@@ -25,9 +25,7 @@
 <h1>
 	{(subject && subject.metadata && subject.metadata.title) || subject.url}
 </h1>
+
 <BreadCrumbs id={subject.id} active={'results'} />
 
-<PostSelector {posts} />
-
-<style>
-</style>
+<PostSelector subjectId={subject.id} {posts} />

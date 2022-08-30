@@ -3,6 +3,9 @@
 	import { goto } from '$app/navigation';
 	import { isURL } from '$lib/validation';
 
+	/** @type {import('./$types').PageData} */
+	export let data;
+
 	let searchForm = {
 		url: '',
 		valid: true,
@@ -19,7 +22,8 @@
 		searchFormModal.open = false;
 	};
 
-	export let subjects = [];
+	let subjects = data.subjects;
+	console.log('subjects', subjects);
 	let getData = async function (el) {
 		searchForm.errors = [];
 		if (!isURL(searchForm.url)) {
