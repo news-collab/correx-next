@@ -25,13 +25,18 @@ export async function GET() {
   parentSpan.end();
   //res.end(JSON.stringify({ users }));
 
-  return {
+  return new Response(JSON.stringify({ users }), {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  /*
     status: 200,
     headers: {
       'Content-Type': 'application/json'
     },
     body: users
-  }
+  }*/
   /*  }
   
     //res.writeHead(401, { 'Content-Type': 'application/json' });

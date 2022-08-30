@@ -24,7 +24,7 @@
 </script>
 
 <script>
-	import { updateUser } from '../../api';
+	import { updateUser } from '../../lib/api';
 	import { session } from '$app/stores';
 
 	export let users = [];

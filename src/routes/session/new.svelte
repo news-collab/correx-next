@@ -29,12 +29,10 @@
 
 	async function onload() {
 		await requestCookie();
-		goto('/');
+		goto('/search');
 	}
 
 	onMount(() => {
 		onload();
 	});
 </script>
-
-{JSON.stringify($session.user)}

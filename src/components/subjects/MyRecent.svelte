@@ -21,8 +21,11 @@
 		{#each subjects as subject}
 			<tr>
 				<td class="subject">
-					<div class="title text-truncate" on:click={handleSubjectClick(subject.id)}>
+					<div class="title text-truncate">
 						{subject.metadata && subject.metadata.title ? subject.metadata.title : subject.url}
+						<a href={`/subjects/${subject.id}/reddit`}>Reddit</a>
+						|
+						<a href={`/subjects/${subject.id}/twitter`}>Twitter</a>
 					</div>
 					{#if subject.metadata && subject.metadata.title}
 						<div class="text-truncate url">{subject.url}</div>
@@ -52,7 +55,6 @@
 	}
 
 	.title {
-		color: #0d6efd;
 		font-weight: bold;
 	}
 

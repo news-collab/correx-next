@@ -1,32 +1,10 @@
-<script context="module">
-	export async function load({ params, fetch, session }) {
-		if (session.user && session.user.id) {
-			const path = '/subjects.json';
-			const response = await fetch(path, { credentials: 'include' });
-
-			if (response.status == 200) {
-				return {
-					status: 200,
-					props: {
-						subjects: await response.json()
-					}
-				};
-			}
-
-			return {
-				status: 500,
-				props: {
-					subjects: []
-				}
-			};
-		}
-	}
-</script>
-
 <script>
 	import MyRecentSubjects from '@/components/subjects/MyRecent.svelte';
 	import { goto } from '$app/navigation';
 	import { isURL } from '$lib/validation';
+
+	/** @type {import('./$types').PageData} */
+	export let data;
 
 	let searchForm = {
 		url: '',
@@ -44,13 +22,14 @@
 		searchFormModal.open = false;
 	};
 
-	export let subjects = [];
+	let subjects = data.subjects;
+	console.log('subjects', subjects);
 	let getData = async function (el) {
 		searchForm.errors = [];
 		if (!isURL(searchForm.url)) {
 			searchForm.errors.push('Please enter a valid URL');
 		} else {
-			const response = await fetch('/subjects.json', {
+			const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/subjects`, {
 				method: 'POST',
 				body: JSON.stringify({ url: searchForm.url }),
 				headers: {
@@ -59,8 +38,8 @@
 			});
 
 			if (response.ok) {
-				const subject = await response.json();
-				goto(`subject/${subject.id}`);
+				const { subject } = await response.json();
+				goto(`subjects/${subject.id}/reddit`);
 			} else if (response.status == 500) {
 				searchFormModal.open = true;
 			} else {

@@ -53,3 +53,32 @@ export async function lookupTwitterUsers(screenname) {
     },
   });
 }
+
+export async function updatePost(post) {
+  const body = JSON.stringify(post);
+
+  return await fetch(`${import.meta.env.VITE_BASE_URL}/api/subjects/${post.subject_id}/posts/${post.id}`,
+    {
+      method: "PUT",
+      body,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+}
+
+export async function starPosts(subjectId, postIds) {
+  const body = JSON.stringify({
+    subjectId,
+    postIds
+  });
+
+  return await fetch(`${import.meta.env.VITE_BASE_URL}/api/subjects/${subjectId}/posts/starred`,
+    {
+      method: "POST",
+      body,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+}

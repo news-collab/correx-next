@@ -1,5 +1,5 @@
 <script>
-	import { session } from '$app/stores';
+	import { page } from '$app/stores';
 	import { signOut as authSignOut } from 'sk-auth/client';
 	import { goto } from '$app/navigation';
 
@@ -10,9 +10,10 @@
 	};
 
 	function logout() {
-		authSignOut().then(session.set);
+		document.cookie = 'session= ; expires = Thu, 01 Jan 1970 00:00:00 GMT';
+
 		logoutModal.open = false;
-		goto(`/about`, { replaceState: true });
+		goto('/login');
 	}
 </script>
 
@@ -70,7 +71,7 @@
 				</li>
 				<li class="nav-item dropdown" />
 			</ul>
-			{#if $session && $session.user && $session.user.id}
+			{#if $page.data.user}
 				<div class="d-flex">
 					<ul class="navbar-nav">
 						<li class="nav-item dropdown">
@@ -82,14 +83,12 @@
 								data-bs-toggle="dropdown"
 								aria-expanded="false"
 							>
-								<img class="avatar" src={$session.user.avatar_url} alt="Avatar" />
+								<img class="avatar" src={$page.data.user.avatar_url} alt="Avatar" />
 							</a>
 
 							<ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdown">
 								<li>
-									<a class="dropdown-item" href="https://www.twitter.com/{$session.user.name}"
-										>@{$session.user.name}</a
-									>
+									<a class="dropdown-item" href="/login">@{$page.data.user.name}</a>
 								</li>
 								{#if true}
 									<li>
