@@ -11,8 +11,6 @@ const tracer = opentelemetry.trace.getTracer('correx');
 
 export async function GET(event) {
   const session = getUserSession(event.request.headers);
-  console.log('event', event.request.headers);
-  console.log(`session: `, session)
   const prisma = new PrismaClient()
   const user = await prisma.users.findUnique({
     where: {
@@ -47,7 +45,6 @@ export async function GET(event) {
 
 export async function POST({ request }) {
   const session = getUserSession(request.headers);
-  console.log(`session`, session);
   const prisma = new PrismaClient();
   const user = await prisma.users.findUnique({
     where: {

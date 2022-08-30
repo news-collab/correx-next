@@ -1,19 +1,12 @@
 import { error } from '@sveltejs/kit';
-import { starPosts, starredPosts } from "$lib/db";
+import { starredPosts } from '$lib/db';
 
 /** @type {import('./$types').RequestHandler} */
-export async function POST({ request }) {
-  const starredPostData = await request.json();
-  console.log(`starredPostData`, starredPostData);
-
+export async function GET({ params }) {
   try {
-    const batchPayload = await starPosts(starredPostData.postIds);
-    console.log(`updated ${batchPayload.count} posts`);
-    const starredPostIds = await (await starredPosts(starredPostData.subjectid)).map(p => p.id);
-    return new Response(JSON.stringify(starredPostIds));
-
+    const posts = await starredPosts(params.subjectId);
+    return new Response(JSON.stringify(posts));
   } catch (e) {
-    return error(500, `could not star posts: ${e}`);
+    return error(500, `could not get starred posts: ${e}`);
   }
-
 }

@@ -9,8 +9,6 @@ export async function load({ request }) {
     return {};
   }
 
-  console.log(`session`, session)
-
   if (session?.user?.id) {
     const prisma = new PrismaClient()
     const user = await prisma.users.findUnique({
