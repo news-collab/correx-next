@@ -26,6 +26,6 @@
 	{(subject && subject.metadata && subject.metadata.title) || subject.url}
 </h1>
 
-<BreadCrumbs id={subject.id} active={'results'} />
+<BreadCrumbs subjectId={subject.id} active={'results'} platform="reddit" />
 
 <PostSelector subjectId={subject.id} {posts} />

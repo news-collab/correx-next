@@ -1,19 +1,18 @@
 <script>
 	import { goto } from '$app/navigation';
 
+	export let platform;
 	export let active;
-	export let id;
+	export let subjectId;
 
 	function isActive(segment) {
 		return active == segment;
 	}
+
 	function navigate(target) {
-		console.log(`navigating to ${target}`);
+		const path = `/subjects/${subjectId}/${platform}/${target}`;
+		console.debug(`navigating to ${path}`);
 		if (target != active) {
-			let path = `/subject/${id}`;
-			if (active != 'followup') {
-				path = `${path}/followup`;
-			}
 			goto(path);
 		}
 	}
