@@ -10,9 +10,9 @@ export async function load({ params, fetch }) {
     const subject = await subjectResponse.json();
 
     const starredPostsResponse = await fetch(starredPostsPath);
-    console.log('starredposts', starredPostsResponse);
     const posts = await starredPostsResponse.json();
     console.debug('data', { subject, posts })
+
     return { subject, posts };
   } catch (e) {
     console.error('could not get starred posts', e)
