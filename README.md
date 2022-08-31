@@ -20,6 +20,12 @@ VITE_BASE_URL=http://dev.localhost:3000
 
 ```
 
+Install dependencies:
+
+```
+npm i
+```
+
 Create the database:
 
 ```
