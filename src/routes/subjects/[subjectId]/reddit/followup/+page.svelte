@@ -1,6 +1,6 @@
 <script>
 	import { JsonView } from '@zerodevx/svelte-json-view';
-	import TwitterPostReplies from '@/components/subjects/TwitterPostReplies.svelte';
+	import RedditPostReplies from '@/components/subjects/RedditPostReplies.svelte';
 	export let data;
 	export let subjectId;
 	export let subject = data.subject;
@@ -14,7 +14,7 @@
 </h1>
 
 <div class="posts">
-	<TwitterPostReplies {posts} />
+	<RedditPostReplies {posts} />
 </div>
 
 <h1>Subject</h1>
