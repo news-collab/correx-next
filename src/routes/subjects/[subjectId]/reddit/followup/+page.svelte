@@ -1,12 +1,12 @@
 <script>
-	import { JsonView } from '@zerodevx/svelte-json-view'
-
+	import { JsonView } from '@zerodevx/svelte-json-view';
+	import TwitterPostReplies from '@/components/subjects/TwitterPostReplies.svelte';
 	export let data;
 	export let subjectId;
 	export let subject = data.subject;
 	export let posts = data.posts;
 
-	console.debug("followup data:", data);
+	console.debug('followup data:', data);
 </script>
 
 <h1>
@@ -14,14 +14,8 @@
 </h1>
 
 <div class="posts">
-{#each posts as post}
-	<div class="post">
-		<div class="id">{post.id}</div>
-		<div class="title">{post.data.title}</div>
-	</div>
-{/each}
+	<TwitterPostReplies {posts} />
 </div>
-
 
 <h1>Subject</h1>
 <JsonView json={subject} />
