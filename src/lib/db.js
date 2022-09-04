@@ -1,4 +1,13 @@
-import { PrismaClient } from '@prisma/client'
+import { platform, PrismaClient } from '@prisma/client'
+
+export async function getUser(id) {
+  const prisma = new PrismaClient()
+  return await prisma.users.findUnique({
+    where: {
+      id
+    }
+  });
+}
 
 export async function updatePost(data) {
   const prisma = new PrismaClient()
@@ -30,6 +39,32 @@ export async function starredPosts(subjectId) {
     where: {
       subject_id: subjectId,
       starred: true
+    },
+    include: {
+      replies: true
     }
+  });
+}
+
+export async function getPost(id) {
+  const prisma = new PrismaClient()
+  return await prisma.posts.findUnique({
+    where: {
+      id
+    }
+  });
+}
+
+export async function createReply(data) {
+  const prisma = new PrismaClient();
+  return await prisma.replies.create({
+    data
+  });
+}
+
+export async function createRedditReply(data) {
+  return createReply({
+    platform: platform.REDDIT,
+    ...data
   })
 }

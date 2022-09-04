@@ -19,4 +19,8 @@ export class Client {
       query: `url:${url}`
     })
   }
+
+  async reply(submissionId, comment) {
+    return this.client.getSubmission(submissionId).reply(comment);
+  }
 }

@@ -1,12 +1,11 @@
 <script>
-	import { JsonView } from '@zerodevx/svelte-json-view';
 	import RedditPostReplies from '@/components/subjects/RedditPostReplies.svelte';
 	export let data;
 	export let subjectId;
 	export let subject = data.subject;
 	export let posts = data.posts;
 
-	console.debug('followup data:', data);
+	//console.debug('followup data:', data);
 </script>
 
 <h1>
@@ -16,8 +15,3 @@
 <div class="posts">
 	<RedditPostReplies {posts} />
 </div>
-
-<h1>Subject</h1>
-<JsonView json={subject} />
-<h1>Posts</h1>
-<JsonView json={posts} />
