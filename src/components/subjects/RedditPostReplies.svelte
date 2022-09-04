@@ -1,10 +1,9 @@
 <script>
-	import moment from 'moment';
-	import RedditPostReplyForm from '@/components/subjects/RedditPostReplyForm.svelte';
-	import { JsonView } from '@zerodevx/svelte-json-view';
-	import ReplySheet from '../Source/ReplySheet.svelte';
+	import RedditReplies from '@/components/subjects/RedditReplies.svelte';
 
 	export let posts = [];
+
+	async function handleNewReply() {}
 </script>
 
 <div class="accordion open" id="post-accordian">
@@ -28,18 +27,8 @@
 				aria-labelledby={`post-header-${post.id}`}
 				data-bs-parent="#post-accordian"
 			>
-				<div class="replies">
-					{#each post.replies as reply}
-						<div class="reply">
-							<div class="body">{reply.data.body}</div>
-							<div class="created">
-								{moment(reply.created_at).format('dddd, MMMM Do YYYY, h:mm:ss a')}
-							</div>
-						</div>
-					{/each}
-				</div>
 				<div class="accordion-body">
-					<RedditPostReplyForm {post} />
+					<RedditReplies {post} />
 				</div>
 			</div>
 		</div>
