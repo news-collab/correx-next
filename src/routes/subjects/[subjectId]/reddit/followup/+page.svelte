@@ -1,4 +1,5 @@
 <script>
+	import BreadCrumbs from '@/components/Source/Breadcrumbs.svelte';
 	import RedditPostReplies from '@/components/subjects/RedditPostReplies.svelte';
 	export let data;
 	export let subjectId;
@@ -12,6 +13,14 @@
 	{(subject && subject.metadata && subject.metadata.title) || subject.url}
 </h1>
 
+<BreadCrumbs subjectId={subject.id} active={'followup'} platform="reddit" />
+
 <div class="posts">
 	<RedditPostReplies {posts} />
 </div>
+
+<style>
+	.posts {
+		margin-top: 10px;
+	}
+</style>

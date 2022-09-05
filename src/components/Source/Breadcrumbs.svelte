@@ -10,7 +10,18 @@
 	}
 
 	function navigate(target) {
-		const path = `/subjects/${subjectId}/${platform}/${target}`;
+		let path;
+
+		switch (target) {
+			case 'results':
+				path = `/subjects/${subjectId}/${platform}`;
+				break;
+
+			case 'followup':
+				path = `/subjects/${subjectId}/${platform}/${target}`;
+				break;
+		}
+
 		console.debug(`navigating to ${path}`);
 		if (target != active) {
 			goto(path);
