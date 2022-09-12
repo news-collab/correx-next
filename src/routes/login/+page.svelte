@@ -9,15 +9,13 @@
 <div class="login">
 	<div class="twitter">
 		<h1>Twitter</h1>
-		{#if $page.data.userSession && $page.data.userSession.tokens && $page.data.userSession.tokens.twitter}
-			<p>Signed in as:</p>
-
-			{$page.data.user.name}
+		{#if $page?.data?.session?.twitterTokens}
+			<p>Signed in as "{$page.data.user.name}".</p>
 		{:else}
 			<p>Signup or login with your Twitter account.</p>
 			<button
 				on:click={() => {
-					goto('/api/auth/reddit/authorize?redirect=/api/auth/reddit/callback');
+					goto('/api/auth/twitter/authorize?redirect=/');
 				}}
 			>
 				<div class="icon">
