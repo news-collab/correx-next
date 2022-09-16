@@ -6,9 +6,9 @@
 
 	async function getTwitterAuthLink() {
 		const linkResponse = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/twitter/link`);
-		const link = await linkResponse.json();
+		const { link } = await linkResponse.json();
 
-		console.log('link', link);
+		window.location = link;
 	}
 </script>
 
