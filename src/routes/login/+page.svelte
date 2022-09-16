@@ -3,7 +3,13 @@
 	import { goto } from '$app/navigation';
 	import FaReddit from 'svelte-icons/fa/FaReddit.svelte';
 	import FaTwitterSquare from 'svelte-icons/fa/FaTwitterSquare.svelte';
-	console.log($page.data);
+
+	async function getTwitterAuthLink() {
+		const linkResponse = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/twitter/link`);
+		const link = await linkResponse.json();
+
+		console.log('link', link);
+	}
 </script>
 
 <div class="login">
@@ -13,11 +19,7 @@
 			<p>Signed in as "{$page.data.user.name}".</p>
 		{:else}
 			<p>Signup or login with your Twitter account.</p>
-			<button
-				on:click={() => {
-					goto('/api/auth/twitter/authorize?redirect=/');
-				}}
-			>
+			<button on:click={getTwitterAuthLink}>
 				<div class="icon">
 					<FaTwitterSquare />
 				</div>
