@@ -2,9 +2,17 @@ import { serialize, parse } from "cookie";
 import { error } from '@sveltejs/kit';
 import { PrismaClient } from '@prisma/client'
 import { TwitterApi } from 'twitter-api-v2';
+import { getUserSession } from "$lib/session";
 
-/** @type {import('../../../../../../.svelte-kit/types/src/routes/api/auth/reddit/authorize/$types').RequestHandler} */
 export async function GET({ request, url }) {
+  const session = getUserSession(request.headers);
+  const prisma = new PrismaClient()
+  const existingUser = await prisma.users.findUnique({
+    where: {
+      id: session.user.id,
+    }
+  });
+  const existingUserId = existingUser ? existingUser.id : '-1';
 
   // Extract tokens from query string
   const oauth_token = url.searchParams.get('oauth_token');
@@ -32,17 +40,15 @@ export async function GET({ request, url }) {
 
     // Create or get user.
     const platformWhere = {
-      twitter_user_id: twitterUser.id
+      id: existingUserId
     };
+
     const platformFields = {
       name: twitterUser.screen_name,
       avatar_url: twitterUser.profile_image_url_https,
       twitter_user_id: twitterUser.id,
       twitter_username: twitterUser.screen_name
     }
-
-    // Create database client.
-    const prisma = new PrismaClient()
 
     // Get or create user.
     const user = await prisma.users.upsert({

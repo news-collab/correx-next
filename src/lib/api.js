@@ -82,3 +82,13 @@ export async function starPosts(subjectId, postIds) {
       }
     })
 }
+
+export async function signup(body) {
+  return await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/signup`, {
+    method: "POST",
+    body,
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+}
