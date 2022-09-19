@@ -5,14 +5,20 @@ import { TwitterApi } from 'twitter-api-v2';
 import { getUserSession } from "$lib/session";
 
 export async function GET({ request, url }) {
+  console.log('headers', parse(request.headers.get('cookie')));
   const session = getUserSession(request.headers);
+  console.log('session', session);
   const prisma = new PrismaClient()
   const existingUser = await prisma.users.findUnique({
     where: {
       id: session.user.id,
     }
   });
-  const existingUserId = existingUser ? existingUser.id : '-1';
+
+  if (!existingUser) {
+    console.error("could not authenticate user");
+    throw error(403, "could not authenticate user");
+  }
 
   // Extract tokens from query string
   const oauth_token = url.searchParams.get('oauth_token');
@@ -38,36 +44,38 @@ export async function GET({ request, url }) {
     const { client: loggedClient, accessToken, accessSecret } = await twitterClient.login(oauth_verifier);
     const twitterUser = await loggedClient.currentUser();
 
-    // Create or get user.
+    // Get user
     const platformWhere = {
-      id: existingUserId
+      id: existingUser.id
     };
 
     const platformFields = {
       name: twitterUser.screen_name,
       avatar_url: twitterUser.profile_image_url_https,
       twitter_user_id: twitterUser.id,
-      twitter_username: twitterUser.screen_name
+      twitter_username: twitterUser.screen_name,
+      twitter_access_token: accessToken,
+      twitter_access_secret: accessSecret
     }
 
     // Get or create user.
-    const user = await prisma.users.upsert({
-      create: platformFields,
-      update: platformFields,
-      where: platformWhere
+    const user = await prisma.users.update({
+      where: platformWhere,
+      data: platformFields
     });
 
-    const session = {
-      user,
-      twitterTokens: {
-        accessToken, accessSecret
+    const userSession = {
+      ...session,
+      user: {
+        ...user
       }
     };
+    delete userSession.user.password;
 
     const status = 302;
     const headers = {
-      'Location': '/',
-      'set-cookie': [serialize('session', JSON.stringify(session), { path: '/' })],
+      'Location': '/integrations',
+      'set-cookie': [serialize('session', JSON.stringify(userSession), { path: '/' })],
     }
 
     return new Response(null, { status, headers });

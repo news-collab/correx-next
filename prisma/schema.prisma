@@ -70,18 +70,22 @@ model subjects {
 
 // Correx users.
 model users {
-  id               String    @id @default(uuid())
-  name             String?   @db.VarChar
-  email            String    @db.VarChar
-  password         String    @db.VarChar
-  avatar_url       String?
-  twitter_user_id  Int?      @unique
-  twitter_username String?   @unique
-  reddit_user_id   String?   @unique
-  reddit_username  String?   @unique
-  admin            Boolean?  @default(false)
-  created_at       DateTime? @default(now()) @db.Timestamp(6)
-  updated_at       DateTime? @default(now()) @db.Timestamp(6)
+  id                    String    @id @default(uuid())
+  name                  String?   @db.VarChar
+  email                 String    @db.VarChar
+  password              String    @db.VarChar
+  avatar_url            String?
+  twitter_user_id       Int?      @unique
+  twitter_username      String?   @unique
+  twitter_access_token  String?
+  twitter_access_secret String?
+  reddit_user_id        String?   @unique
+  reddit_username       String?   @unique
+  reddit_access_token   String?
+  reddit_refresh_token  String?
+  admin                 Boolean?  @default(false)
+  created_at            DateTime? @default(now()) @db.Timestamp(6)
+  updated_at            DateTime? @default(now()) @db.Timestamp(6)
 
   post    posts[]
   reply   replies[]

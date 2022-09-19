@@ -102,3 +102,9 @@ export async function login(body) {
     }
   })
 }
+
+export async function removeIntegration(integration) {
+  return await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/${integration}/remove`, {
+    method: "POST"
+  })
+}

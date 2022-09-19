@@ -9,6 +9,9 @@
     onClosed: false
   };
 
+  let { user } = $page.data;
+  console.log(user);
+
   function logout() {
     document.cookie = 'session= ; expires = Thu, 01 Jan 1970 00:00:00 GMT';
 
@@ -71,7 +74,7 @@
         </li>
         <li class="nav-item dropdown" />
       </ul>
-      {#if $page.data.user}
+      {#if user}
         <div class="d-flex">
           <ul class="navbar-nav">
             <li class="nav-item dropdown">
@@ -83,10 +86,10 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {#if $page.data.user.avatar_url}
-                  <img class="avatar" src={$page.data.user.avatar_url} alt="Avatar" />
+                {#if user.avatar_url}
+                  <img class="avatar" src={user.avatar_url} alt="Avatar" />
                 {:else}
-                  {$page.data.user.email}
+                  {user.email}
                 {/if}
               </a>
 

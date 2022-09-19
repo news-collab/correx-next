@@ -24,7 +24,9 @@ export async function POST({ request, url }) {
 
     const status = 201;
     const headers = {
-      'set-cookie': [serialize('session', JSON.stringify(session), { path: '/' })],
+      'set-cookie': [serialize('session', JSON.stringify(session), {
+        path: '/'
+      })],
     }
 
     return new Response(null, { status, headers });

@@ -2,9 +2,23 @@ import { serialize } from "cookie";
 import { error } from '@sveltejs/kit';
 import { PrismaClient } from '@prisma/client'
 import { Client } from "$lib/reddit/client";
+import { getUserSession } from "$lib/session";
 
 /** @type {import('../../../../../../.svelte-kit/types/src/routes/api/auth/reddit/authorize/$types').RequestHandler} */
-export async function GET({ url }) {
+export async function GET({ request, url }) {
+  const session = getUserSession(request.headers);
+  const prisma = new PrismaClient();
+  const existingUser = await prisma.users.findUnique({
+    where: {
+      id: session.user.id,
+    }
+  });
+
+  if (!existingUser) {
+    console.error("could not authenticate user");
+    throw error(403, "could not authenticate user");
+  }
+
   const code = url.searchParams.get('code');
   const stateParam = url.searchParams.get('state');
 
@@ -38,38 +52,41 @@ export async function GET({ url }) {
     // Get Reddit profile.
     const profile = await redditClient.getMe();
 
-    // Create or get user.
+    // Get existing user.
     const platformWhere = {
-      reddit_user_id: profile.id
+      id: existingUser.id
     };
     const platformFields = {
       name: profile.name,
       avatar_url: profile.snoovatar_img,
       reddit_user_id: profile.id,
-      reddit_username: profile.name
+      reddit_username: profile.name,
+      reddit_access_token: accessToken,
+      reddit_refresh_token: refreshToken
     }
 
     // Create database client.
     const prisma = new PrismaClient()
 
     // Get or create user.
-    const user = await prisma.users.upsert({
-      create: platformFields,
-      update: platformFields,
-      where: platformWhere
+    const user = await prisma.users.update({
+      where: platformWhere,
+      data: platformFields
     });
 
-    const session = {
+    const userSession = {
+      ...session,
       user,
-      redditTokens: {
-        accessToken, refreshToken
-      }
     };
+    delete userSession.user.password;
+
 
     const status = 302;
     const headers = {
       'Location': state.redirectURL,
-      'set-cookie': [serialize('session', JSON.stringify(session), { path: '/' })],
+      'set-cookie': [serialize('session', JSON.stringify(userSession), {
+        path: '/'
+      })],
     }
 
     return new Response(null, { status, headers });
