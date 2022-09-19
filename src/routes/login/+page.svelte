@@ -1,69 +1,75 @@
 <script>
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
-	import FaReddit from 'svelte-icons/fa/FaReddit.svelte';
-	import FaTwitterSquare from 'svelte-icons/fa/FaTwitterSquare.svelte';
+  import { required, length, confirmation } from '$lib/validation/validators';
+  import { login } from '$lib/api';
+  import { goto } from '$app/navigation';
 
-	async function getTwitterAuthLink() {
-		const linkResponse = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/twitter/link`);
-		const { link } = await linkResponse.json();
+  let loginSubmitted = false;
+  let email = '';
+  let emailError = '';
+  let password = '';
+  let passwordError = '';
+  let validLogin = false;
 
-		window.location = link;
-	}
+  $: {
+    if (loginSubmitted) {
+      emailError = required(email, 'Email is required');
+      passwordError = length(password, 5, 'Password must be at least 5 characters');
+
+      validLogin = emailError.length === 0 && passwordError.length === 0;
+    }
+  }
+
+  function handleSubmit() {
+    loginSubmitted = true;
+  }
+
+  async function handleLogin() {
+    if (validLogin) {
+      const loginData = JSON.stringify({
+        email,
+        password
+      });
+
+      const response = await login(loginData);
+
+      if (response.ok) {
+        goto('/');
+      }
+    }
+  }
 </script>
 
-<div class="login">
-	<div class="twitter">
-		<h1>Twitter</h1>
-		{#if $page?.data?.session?.twitterTokens}
-			<p>Signed in as "{$page.data.user.name}".</p>
-		{:else}
-			<p>Signup or login with your Twitter account.</p>
-			<button on:click={getTwitterAuthLink}>
-				<div class="icon">
-					<FaTwitterSquare />
-				</div>
-				<span>Login</span>
-			</button>
-		{/if}
-	</div>
+<h1>Login</h1>
 
-	<div class="reddit">
-		<h1>Reddit</h1>
-
-		{#if $page?.data?.session?.redditTokens}
-			<p>Signed in as "{$page.data.user.name}".</p>
-		{:else}
-			<p>Signup or login with your Reddit account.</p>
-			<button
-				on:click={() => {
-					goto('/api/auth/reddit/authorize?redirect=/');
-				}}
-			>
-				<div class="icon">
-					<FaReddit />
-				</div>
-				<span>Login</span>
-			</button>
-		{/if}
-	</div>
-</div>
-
-<style>
-	.login {
-		display: flex;
-		justify-content: space-evenly;
-	}
-
-	button {
-		display: inline-flex;
-		justify-content: center;
-		padding: 5px 10px;
-	}
-
-	.icon {
-		display: inline-block;
-		height: 16px;
-		margin-right: 0.25rem;
-	}
-</style>
+<form on:submit|preventDefault={handleLogin}>
+  <div class="mb-3">
+    <label for="email" class="form-label">Email address</label>
+    <input
+      type="email"
+      class="form-control is-invalid"
+      class:is-invalid={emailError}
+      id="email"
+      placeholder="phil.theist@gmail.com"
+      bind:value={email}
+    />
+    <div id="validationEmail" class:invalid-feedback={emailError}>
+      {emailError}
+    </div>
+  </div>
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input
+      type="password"
+      class="form-control"
+      class:is-invalid={passwordError}
+      id="password"
+      bind:value={password}
+    />
+    <div id="validationPassword" class:invalid-feedback={passwordError}>
+      {passwordError}
+    </div>
+  </div>
+  <div class="mb-3">
+    <button class="btn btn-primary" on:click={handleSubmit}>Login</button>
+  </div>
+</form>

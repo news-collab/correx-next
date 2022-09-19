@@ -5,31 +5,33 @@ import { PrismaClient } from '@prisma/client'
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request, url }) {
-  const { email, password } = await request.json();
   try {
-    const hash = await bcrypt.hash(password, parseInt(import.meta.env.VITE_USER_PASSWORD_SALT_ROUNDS, 10));
-
-
+    const { email, password } = await request.json();
     const prisma = new PrismaClient();
-    const user = await prisma.users.create({
-      data: {
-        email,
-        password: hash
-      },
+    const user = await prisma.users.findUnique({
+      where: {
+        email: email
+      }
     });
+
+    const valid = await bcrypt.compare(password, user.password);
+
+    if (!valid) {
+      throw error(401, "invalid email or password");
+    }
 
     const session = {
       user
     };
 
-    const status = 201;
+    const status = 200;
     const headers = {
       'set-cookie': [serialize('session', JSON.stringify(session), { path: '/' })],
     }
 
     return new Response(null, { status, headers });
   } catch (e) {
-    console.error("could not encrypt password", e);
-    throw error(500, "could not encrypt password");
+    console.error("could not login", e);
+    throw error(500, "could not login");
   }
 }

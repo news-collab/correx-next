@@ -92,3 +92,13 @@ export async function signup(body) {
     }
   })
 }
+
+export async function login(body) {
+  return await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/login`, {
+    method: "POST",
+    body,
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+}
