@@ -5,9 +5,7 @@ import { TwitterApi } from 'twitter-api-v2';
 import { getUserSession } from "$lib/session";
 
 export async function GET({ request, url }) {
-  console.log('headers', parse(request.headers.get('cookie')));
   const session = getUserSession(request.headers);
-  console.log('session', session);
   const prisma = new PrismaClient()
   const existingUser = await prisma.users.findUnique({
     where: {

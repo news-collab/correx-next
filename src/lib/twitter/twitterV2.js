@@ -11,6 +11,7 @@ export function newTwitterClient(userToken, userTokenSecret) {
     access_token_key: userToken,
     access_token_secret: userTokenSecret,
   };
+
   return new Twitter(clientConfig);
 }
 
@@ -23,7 +24,7 @@ export async function getTweets(postURL, user) {
   try {
     return await client.get("tweets/search/recent", queryOptions);
   } catch (error) {
-    console.log(`error getting tweets: ${error}`);
+    console.error(`error getting tweets: ${error}`);
     return {
       statuses: [],
     };
@@ -40,7 +41,7 @@ export async function search(url, tokens) {
   try {
     return await client.get(`tweets/search/recent?query=${query}&expansions=author_id&tweet.fields=${tweetFields.join(",")}&user.fields=${userFields.join(",")}`);
   } catch (error) {
-    console.log(`error getting tweets: ${error}`);
+    console.error(`error getting tweets: ${error}`);
     return {
       statuses: [],
     };
@@ -60,10 +61,9 @@ export async function getConversation(conversationId, user) {
   const userFields = ["username", "public_metrics"]
 
   try {
-    console.log(`tweets/search/recent?query=${query}&tweet.fields=${tweetFields.join(",")}`)
     return await client.get(`tweets/search/recent?query=${query}&expansions=author_id&tweet.fields=${tweetFields.join(",")}&user.fields=${userFields.join(",")}`);
   } catch (error) {
-    console.log(`error getting tweets: ${error}`);
+    console.error(`error getting tweets: ${error}`);
     return {
       data: [],
     };
@@ -115,8 +115,6 @@ export async function sendDirectMessage(message, invitee, user) {
       },
     },
   };
-  console.log(config);
-  console.log(event);
 
   return await client.post("direct_messages/events/new.json", event);
 }

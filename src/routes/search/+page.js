@@ -5,7 +5,6 @@ export async function load() {
 
   if (response.ok) {
     const subjects = await response.json();
-    console.log(subjects);
 
     return {
       subjects

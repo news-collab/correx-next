@@ -21,7 +21,7 @@ export async function getTweets(postURL, user) {
   try {
     return await client.get("search/tweets", queryOptions);
   } catch (error) {
-    console.log(`error getting tweets: ${JSON.stringify(error)}`);
+    console.error(`error getting tweets: ${JSON.stringify(error)}`);
     return {
       statuses: [],
     };
@@ -35,7 +35,6 @@ export async function sendTweets(data, user) {
     in_reply_to_status_id: data.in_reply_to_status_id,
     auto_populate_reply_metadata: data.auto_populate_reply_metadata,
   };
-  console.log(tweetData);
   return await client.post("statuses/update", tweetData);
 }
 
@@ -74,8 +73,6 @@ export async function sendDirectMessage(message, invitee, user) {
       },
     },
   };
-  console.log(config);
-  console.log(event);
 
   return await client.post("direct_messages/events/new.json", event);
 }

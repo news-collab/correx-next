@@ -22,7 +22,7 @@ export async function get(req, res) {
       parentSpan.end();
       res.end(JSON.stringify({ users: response }));
     } catch (e) {
-      console.log(`error getting twitter users: ${JSON.stringify(e)}`);
+      console.error(`error getting twitter users: ${JSON.stringify(e)}`);
       lookupUsersSpan.setAttribute("error", response);
       lookupUsersSpan.end();
       res.writeHead(200, { 'Content-Type': 'application/json' });

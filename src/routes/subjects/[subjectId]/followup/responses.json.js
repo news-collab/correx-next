@@ -3,7 +3,6 @@ import { sendTweets } from "@/twitterV2";
 
 const { NODE_ENV } = process.env;
 if (NODE_ENV === undefined) { throw "NODE_ENV must be defined"; }
-//console.log(uuid);
 
 export async function get(req, res) {
   if (req.session && req.session.passport && req.session.passport.user) {
@@ -103,7 +102,6 @@ export async function post(req, res) {
         }));
       }
     } else {
-      console.log(`params: ${JSON.stringify(req.body)}`);
       res.writeHead(400, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ message: 'Submitted data must include a "responses" key.' }));
     }

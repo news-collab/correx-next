@@ -10,7 +10,6 @@
   };
 
   let { user } = $page.data;
-  console.log(user);
 
   function logout() {
     document.cookie = 'session= ; expires = Thu, 01 Jan 1970 00:00:00 GMT';

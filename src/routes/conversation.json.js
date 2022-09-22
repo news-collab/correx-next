@@ -11,7 +11,6 @@ export async function post(req, res) {
     const user = req.session.passport.user;
 
     const { id } = req.body;
-    console.log(id)
 
     const getConversationSpan = tracer.startSpan("twitter-get-conversation", undefined, ctx);
     const conversation = await getConversation(id);

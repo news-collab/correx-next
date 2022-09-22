@@ -1,9 +1,9 @@
 <script>
-  import { onMount, afterUpdate, beforeUpdate, tick } from "svelte";
-  import FaSortDown from "svelte-icons/fa/FaSortDown.svelte";
-  import FaSortUp from "svelte-icons/fa/FaSortUp.svelte";
-  import TiArrowSortedDown from "svelte-icons/ti/TiArrowSortedDown.svelte";
-  import TiArrowSortedUp from "svelte-icons/ti/TiArrowSortedUp.svelte";
+  import { onMount, afterUpdate, beforeUpdate, tick } from 'svelte';
+  import FaSortDown from 'svelte-icons/fa/FaSortDown.svelte';
+  import FaSortUp from 'svelte-icons/fa/FaSortUp.svelte';
+  import TiArrowSortedDown from 'svelte-icons/ti/TiArrowSortedDown.svelte';
+  import TiArrowSortedUp from 'svelte-icons/ti/TiArrowSortedUp.svelte';
 
   export let items = [];
   export let attributes = {};
@@ -13,26 +13,25 @@
   export let onSelect = function () {};
   export let sort = {
     attribute: undefined,
-    direction: "descending",
+    direction: 'descending'
   };
   export let activeIcon = undefined;
   export let activeItem = undefined;
 
   function sortBy(attribute, direction) {
-    console.log("Sorting...", attribute, direction);
     if (!direction) {
       // if sortBy is clicked on the same attribute, reverse the sort order.
       if (attribute == sort.attribute) {
-        direction = sort.direction == "ascending" ? "descending" : "ascending";
+        direction = sort.direction == 'ascending' ? 'descending' : 'ascending';
       } else {
         // if the attribute is different, but the direction isn't set, set it.
-        direction = "descending";
+        direction = 'descending';
       }
     }
 
     sort = {
       attribute,
-      direction,
+      direction
     };
 
     function comparatorFor(prop, dir) {
@@ -45,16 +44,14 @@
         } else {
           returnValue = 0;
         }
-        if (dir == "descending") {
+        if (dir == 'descending') {
           returnValue = -returnValue;
         }
         return returnValue;
       };
     }
 
-    selectables = selectables.sort(
-      comparatorFor(sort.attribute, sort.direction)
-    );
+    selectables = selectables.sort(comparatorFor(sort.attribute, sort.direction));
   }
 
   onMount(async () => {
@@ -63,7 +60,7 @@
       return { checked: item.checked, item: item, active: false };
     });
 
-    sortBy(Object.keys(attributes)[0], "descending");
+    sortBy(Object.keys(attributes)[0], 'descending');
     if (activeItem !== undefined) {
       if (selectables[activeItem]) {
         selectables[activeItem].active = true;
@@ -72,7 +69,6 @@
   });
 
   function clicked(item) {
-    //console.log(item);
     update();
     onSelect(item);
   }
@@ -106,7 +102,7 @@
               <div class="attribute">{name}</div>
               {#if sort.attribute == attribute}
                 <div class="icon">
-                  {#if sort.direction == "ascending"}
+                  {#if sort.direction == 'ascending'}
                     <TiArrowSortedUp />
                   {:else}
                     <TiArrowSortedDown />
@@ -135,10 +131,7 @@
               on:click={() => {
                 selectable.checked = !selectable.checked;
                 clicked(selectable);
-              }}
-              >{selectable.item[key] === undefined
-                ? ""
-                : selectable.item[key]}</td
+              }}>{selectable.item[key] === undefined ? '' : selectable.item[key]}</td
             >
           {/each}
           <td on:click={handleClick(selectable)}>

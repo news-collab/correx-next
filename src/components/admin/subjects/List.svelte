@@ -1,6 +1,6 @@
 <script>
-  import moment from "moment";
-  import { refreshSubjectMetadata, refreshTweets } from "@/admin_api";
+  import moment from 'moment';
+  import { refreshSubjectMetadata, refreshTweets } from '@/admin_api';
 
   export let subjects = [];
 
@@ -9,12 +9,8 @@
     if (response.status >= 200 && response.status < 300) {
       const { subject } = await response.json();
       const i = subjects.findIndex((s) => s.uuid === subject.uuid);
-      console.log(`length: ${subjects.length} index: ${i}`);
-      subjects = [
-        ...subjects.slice(0, i),
-        subject,
-        ...subjects.slice(i + 1, subjects.length),
-      ];
+
+      subjects = [...subjects.slice(0, i), subject, ...subjects.slice(i + 1, subjects.length)];
     }
   }
 
@@ -23,12 +19,7 @@
     if (response.status >= 200 && response.status < 300) {
       const { subject } = await response.json();
       const i = subjects.findIndex((s) => s.uuid === subject.uuid);
-      console.log(`length: ${subjects.length} index: ${i}`);
-      subjects = [
-        ...subjects.slice(0, i),
-        subject,
-        ...subjects.slice(i + 1, subjects.length),
-      ];
+      subjects = [...subjects.slice(0, i), subject, ...subjects.slice(i + 1, subjects.length)];
     }
   }
 </script>
@@ -60,10 +51,10 @@
             type="button"
             class="btn btn-primary btn-sm">Refresh Metadata</button
           ><button
-          on:click={handleRefreshTweets(subject.uuid)}
-          type="button"
-          class="btn btn-primary btn-sm">Refresh Metadata</button
-        ></td
+            on:click={handleRefreshTweets(subject.uuid)}
+            type="button"
+            class="btn btn-primary btn-sm">Refresh Metadata</button
+          ></td
         >
       </tr>
     {/each}

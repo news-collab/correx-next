@@ -42,7 +42,6 @@ export async function POST({ request, params }) {
   if (user) {
     const { id } = params;
     const postData = await request.json();
-    console.log(`postData`, postData)
     if (postData?.posts?.length > 0) {
       // get the subject
       /*const subject = await prisma.subjects.findUnique({

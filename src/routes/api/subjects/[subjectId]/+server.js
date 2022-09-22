@@ -4,17 +4,23 @@ import { error } from '@sveltejs/kit';
 
 const tracer = opentelemetry.trace.getTracer('correx');
 
-export async function GET({ request, params }) {
+export async function GET({ request, params, url }) {
   const prisma = new PrismaClient()
   const parentSpan = tracer.startSpan('api-get-source');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
 
   const { subjectId: id } = params;
+  const platform = url.searchParams.get('platform');
+  console.log('platform', platform);
   const getSubjectSpan = tracer.startSpan("db-get-subject", undefined, ctx);
   const subject = await prisma.subjects.findUnique({
     where: { id },
     include: {
-      posts: true
+      posts: {
+        where: {
+          platform
+        }
+      }
     }
   });
 

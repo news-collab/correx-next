@@ -8,7 +8,6 @@ export async function post(req, res) {
   if (req.session && req.session.passport && req.session.passport.user && req.session.passport.user.admin) {
     const user = req.session.passport.user;
     const { id } = req.params;
-    console.log(id);
     const { Subject } = db.entities;
     const connection = await db.getConnection(NODE_ENV);
     const SubjectRepository = connection.getRepository(Subject);

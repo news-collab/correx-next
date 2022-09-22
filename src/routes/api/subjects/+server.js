@@ -1,4 +1,5 @@
 import { search } from '$lib/twitter/twitterV2';
+import { error } from '@sveltejs/kit';
 import opentelemetry from '@opentelemetry/api';
 import { PrismaClient, platform } from '@prisma/client'
 import { extractMetadata } from "$lib/meta";
@@ -11,6 +12,11 @@ const tracer = opentelemetry.trace.getTracer('correx');
 
 export async function GET(event) {
   const session = getUserSession(event.request.headers);
+
+  if (!session) {
+    throw error(403, "not authorized");
+  }
+
   const prisma = new PrismaClient()
   const user = await prisma.users.findUnique({
     where: {
@@ -45,12 +51,21 @@ export async function GET(event) {
 
 export async function POST({ request }) {
   const session = getUserSession(request.headers);
+
+  if (!session) {
+    throw error(403, "not authorized");
+  }
+
   const prisma = new PrismaClient();
   const user = await prisma.users.findUnique({
     where: {
       id: session.user.id,
     }
   });
+
+  if (!user) {
+    throw error(403, "not authorized");
+  }
 
   const parentSpan = tracer.startSpan('api-create-source');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
@@ -61,11 +76,11 @@ export async function POST({ request }) {
   // Use existing subject if possible.
   let subject = await prisma.subjects.findFirst({ where: { url: url, submitter_id: user.id } });
   if (!subject) {
-    let metadata;
+    let metadata = {};
     try {
       metadata = await extractMetadata(url);
     } catch (error) {
-      console.log(`error extracting metadata: ${JSON.stringify(error)} `);
+      console.error(`error extracting metadata: ${JSON.stringify(error)} `);
     }
     const saveSubjectSpan = tracer.startSpan("db-save-subject", undefined, ctx);
     subject = await prisma.subjects.create({
@@ -80,29 +95,31 @@ export async function POST({ request }) {
   }
 
   // Search Twitter for URL.
-  /*
   const getTweetsSpan = tracer.startSpan("twitter-get-tweets", undefined, ctx);
-  const twitterSearchResponse = await search(subject.url, tokens);
+  const twitterSearchResponse = await search(subject.url, {
+    access_token_key: user.twitter_access_token,
+    access_token_secret: user.twitter_access_secret
+  });
+  // @ts-ignore
   const tweets = twitterSearchResponse.data;
+  // @ts-ignore
   const twitterUsers = twitterSearchResponse.includes.users;
 
   getTweetsSpan.setAttribute("tweets", tweets.length);
   getTweetsSpan.end();
 
   // Create posts from tweets.
-  const posts = await createPostsFromTweets(ctx, tweets, twitterUsers, subject, user);
-*/
+  await createPostsFromTweets(ctx, tweets, twitterUsers, subject, user);
 
-  const redditClient = new RedditClient(import.meta.env.VITE_REDDIT_API_KEY, import.meta.env.VITE_REDDIT_API_SECRET, session.redditTokens.refreshToken);
+
+  const redditClient = new RedditClient(import.meta.env.VITE_REDDIT_API_KEY, import.meta.env.VITE_REDDIT_API_SECRET, user.reddit_refresh_token);
   const submissions = await redditClient.searchURL(subject.url);
-  const posts = await createRedditPosts(ctx, submissions, subject, user);
-  console.log(`submissions`, submissions);
+  await createRedditPosts(ctx, submissions, subject, user);
 
   const headers = { 'Content-Type': 'application/json' };
   const body = JSON.stringify({
     subject
   });
-  console.log(`body`, body)
   parentSpan.end();
   return new Response(body, { headers });
 }

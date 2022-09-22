@@ -18,7 +18,6 @@
   async function handleRemoveIntegration(integration) {
     const response = await removeIntegration(integration);
     const updatedUser = await response.json();
-    console.log('updatedUser', updatedUser);
     user = updatedUser;
   }
 </script>

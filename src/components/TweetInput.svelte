@@ -1,22 +1,22 @@
 <script>
-  import { onMount } from "svelte";
-  import twitterText from "twitter-text";
-  import moment from "moment";
-  import enableTweeting from "./Source/enableTweeting.js";
-  import { getConversation } from "@/api";
+  import { onMount } from 'svelte';
+  import twitterText from 'twitter-text';
+  import moment from 'moment';
+  import enableTweeting from './Source/enableTweeting.js';
+  import { getConversation } from '@/api';
 
   export let sendTweet = function () {
-    console.log("default sendTweet");
+    console.log('default sendTweet');
   };
   export let tweet = {
-    text: "dummy text",
-    lang: "en",
+    text: 'dummy text',
+    lang: 'en',
     user: {
-      screen_name: "user",
-      name: "user",
-    },
+      screen_name: 'user',
+      name: 'user'
+    }
   };
-  export let tweetText = "";
+  export let tweetText = '';
   let tweetParse;
   let textIsTooLong = false;
   let textIsEmpty = false;
@@ -28,11 +28,11 @@
     try {
       const conversationJSON = await conversationResponse.json();
       tweets = conversationJSON.conversation.data;
-      conversationJSON.conversation.includes.users.forEach(u => {
+      conversationJSON.conversation.includes.users.forEach((u) => {
         users[u.id] = u;
       });
     } catch (e) {
-      console.log(`could not get conversation: ${e}`);
+      console.error(`could not get conversation: ${e}`);
     }
   }
 
@@ -51,10 +51,14 @@
 
 <div class="reply-pane">
   {#each tweets as tweet}
-  <div class="tweet">
-    <div>{users[tweet.author_id].username} - {moment(tweet.created_at).format("dddd, MMMM Do YYYY, h:mm:ss a")}</div>
-    <p>{tweet.text}</p>
-  </div>
+    <div class="tweet">
+      <div>
+        {users[tweet.author_id].username} - {moment(tweet.created_at).format(
+          'dddd, MMMM Do YYYY, h:mm:ss a'
+        )}
+      </div>
+      <p>{tweet.text}</p>
+    </div>
   {/each}
   <textarea class:error={textIsTooLong} bind:value={tweetText} />
   <div>
