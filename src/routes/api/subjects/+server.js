@@ -102,6 +102,7 @@ export async function POST({ request }) {
   });
   // @ts-ignore
   const tweets = twitterSearchResponse.data;
+  console.log('tweets', tweets);
   // @ts-ignore
   const twitterUsers = twitterSearchResponse.includes.users;
 

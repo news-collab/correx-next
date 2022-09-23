@@ -1,58 +1,129 @@
 <script>
-	import { goto } from '$app/navigation';
+  import FaReddit from 'svelte-icons/fa/FaReddit.svelte';
+  import FaTwitterSquare from 'svelte-icons/fa/FaTwitterSquare.svelte';
+  import { goto } from '$app/navigation';
 
-	export let platform;
-	export let active;
-	export let subjectId;
+  export let platform;
+  export let active;
+  export let subjectId;
 
-	function isActive(segment) {
-		return active == segment;
-	}
+  function isActive(segment) {
+    return active == segment;
+  }
 
-	function navigate(target) {
-		let path;
+  function navigate() {
+    let path;
 
-		switch (target) {
-			case 'results':
-				path = `/subjects/${subjectId}/${platform}`;
-				break;
+    switch (active) {
+      case 'results':
+        path = `/subjects/${subjectId}/${platform}`;
+        break;
 
-			case 'followup':
-				path = `/subjects/${subjectId}/${platform}/${target}`;
-				break;
-		}
+      case 'followup':
+        path = `/subjects/${subjectId}/${platform}/${active}`;
+        break;
+    }
 
-		console.debug(`navigating to ${path}`);
-		if (target != active) {
-			goto(path);
-		}
-	}
+    console.debug(`navigating to ${path}`);
+    goto(path);
+  }
 </script>
 
 <nav>
-	<div on:click={() => navigate('results')} class="segment" class:active={isActive('results')}>
-		Results
-	</div>
-	<div>&gt;</div>
-	<div on:click={() => navigate('followup')} class="segment" class:active={isActive('followup')}>
-		Followup
-	</div>
+  <div class="segment">
+    <div class="btn-group" role="group" aria-label="Platforms">
+      <button
+        type="button"
+        class="btn"
+        class:reddit={platform === 'reddit'}
+        class:btn-secondary={platform !== 'reddit'}
+        on:click={() => {
+          platform = 'reddit';
+          navigate();
+        }}
+        ><div class="icon">
+          <FaReddit />
+        </div>
+        Reddit</button
+      >
+      <button
+        type="button"
+        class="btn"
+        class:twitter={platform === 'twitter'}
+        class:btn-secondary={platform !== 'twitter'}
+        on:click={() => {
+          platform = 'twitter';
+          navigate();
+        }}
+        ><div class="icon">
+          <FaTwitterSquare />
+        </div>
+        Twitter</button
+      >
+    </div>
+  </div>
+  <div
+    on:click={() => {
+      active = 'results';
+      navigate();
+    }}
+    class="segment"
+    class:active={isActive('results')}
+  >
+    Conversations
+  </div>
+  <div>&gt;</div>
+  <div
+    on:click={() => {
+      active = 'followup';
+      navigate();
+    }}
+    class="segment"
+    class:active={isActive('followup')}
+  >
+    Followup
+  </div>
 </nav>
 
 <style>
-	nav {
-		display: flex;
-	}
-	.segment {
-		text-decoration: underline;
-	}
-	.active {
-		background: lightpink;
-		text-decoration: double;
-		cursor: default;
-	}
-	nav > div {
-		padding: 16px;
-		cursor: pointer;
-	}
+  nav {
+    display: flex;
+    align-items: center;
+  }
+  .segment {
+  }
+  .active {
+    text-decoration: double;
+    cursor: default;
+    background-color: lightpink;
+  }
+  nav > div {
+    padding: 16px;
+    cursor: pointer;
+  }
+  button {
+    display: flex;
+    align-items: center;
+  }
+  button.reddit {
+    color: #fff;
+    background-color: #ff4500;
+  }
+  button.reddit:hover {
+    color: #fff;
+    background-color: #ff4500;
+  }
+  button.twitter {
+    color: #fff;
+    background-color: rgb(29 155 237);
+  }
+  button.twitter:hover {
+    color: #fff;
+    background-color: rgb(29 155 237);
+  }
+  button .icon {
+    margin-right: 5px;
+    height: 24px;
+    width: 24px;
+  }
 </style>

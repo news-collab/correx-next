@@ -2,8 +2,8 @@ import { error } from '@sveltejs/kit';
 
 /** @type {import('../../../../../../.svelte-kit/types/src/routes/subjects/[subjectId]/reddit/followup/$types').PageLoad} */
 export async function load({ params, fetch }) {
-  const subjectPath = `${import.meta.env.VITE_BASE_URL}/api/subjects/${params.subjectId}?platform=REDDIT`;
-  const starredPostsPath = `${import.meta.env.VITE_BASE_URL}/api/subjects/${params.subjectId}/posts/starred?platform=REDDIT`;
+  const subjectPath = `${import.meta.env.VITE_BASE_URL}/api/subjects/${params.subjectId}?platform=TWITTER`;
+  const starredPostsPath = `${import.meta.env.VITE_BASE_URL}/api/subjects/${params.subjectId}/posts/starred?platform=TWITTER`;
 
   try {
     const subjectResponse = await fetch(subjectPath);

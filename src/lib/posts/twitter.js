@@ -18,6 +18,7 @@ export async function createPostsFromTweets(ctx, tweets, twitterUsers, subject, 
         platform_url: `https://twitter.com/${author.username}/status/${tweet.id}`,
         data: {
           id_str: tweet.id,
+          text: tweet.text,
           created_at: tweet.created_at,
 
           retweet_count: tweet.public_metrics.retweet_count,

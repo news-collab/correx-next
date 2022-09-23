@@ -11,7 +11,6 @@ export async function GET({ request, params, url }) {
 
   const { subjectId: id } = params;
   const platform = url.searchParams.get('platform');
-  console.log('platform', platform);
   const getSubjectSpan = tracer.startSpan("db-get-subject", undefined, ctx);
   const subject = await prisma.subjects.findUnique({
     where: { id },

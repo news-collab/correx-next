@@ -33,15 +33,20 @@ export async function starPosts(postIds) {
   })
 }
 
-export async function starredPosts(subjectId) {
+export async function starredPosts(subjectId, platform) {
   const prisma = new PrismaClient()
   return await prisma.posts.findMany({
     where: {
       subject_id: subjectId,
-      starred: true
+      starred: true,
+      platform
     },
     include: {
-      replies: true
+      replies: {
+        where: {
+          platform
+        }
+      }
     }
   });
 }
