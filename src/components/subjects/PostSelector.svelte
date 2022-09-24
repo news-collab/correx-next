@@ -41,7 +41,7 @@
     <thead>
       <tr>
         <th scope="col" />
-        <th scope="col">submission title</th>
+        <th scope="col">submission</th>
         <th scope="col">score</th>
         <th scope="col">comments</th>
         <th scope="col">author</th>
