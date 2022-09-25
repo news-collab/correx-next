@@ -37,7 +37,7 @@
       <tr>
         <td>
           <div class="text-truncate">
-            <a sapper:prefetch href="subject/{subject.uuid}"
+            <a data-sveltekit-prefetch href="subject/{subject.uuid}"
               >{subject.metadata && subject.metadata.title
                 ? subject.metadata.title
                 : subject.url}</a

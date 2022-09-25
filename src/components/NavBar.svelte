@@ -66,10 +66,10 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" href="/search" sapper:prefetch>Search</a>
+          <a class="nav-link" href="/search" data-sveltekit-prefetch>Search</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/about" sapper:prefetch>About</a>
+          <a class="nav-link" href="/about" data-sveltekit-prefetch>About</a>
         </li>
         <li class="nav-item dropdown" />
       </ul>
@@ -98,10 +98,12 @@
                 </li>
                 {#if true}
                   <li>
-                    <a class="dropdown-item" href="/admin/users" sapper:prefetch>User Management</a>
+                    <a class="dropdown-item" href="/admin/users" data-sveltekit-prefetch
+                      >User Management</a
+                    >
                   </li>
                   <li>
-                    <a class="dropdown-item" href="/admin/subjects" sapper:prefetch
+                    <a class="dropdown-item" href="/admin/subjects" data-sveltekit-prefetch
                       >Subject Management</a
                     >
                   </li>
@@ -124,7 +126,10 @@
       {:else}
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="/login" sapper:prefetch>Login</a>
+            <a class="nav-link" href="/login" data-sveltekit-prefetch>Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signup" data-sveltekit-prefetch>Signup</a>
           </li>
         </ul>
       {/if}
