@@ -1,6 +1,6 @@
 <script>
   import BreadCrumbs from '@/components/Source/Breadcrumbs.svelte';
-  import PostSelector from '@/components/subjects/PostSelector.svelte';
+  import PostSelector from '@/components/posts/PostSelector.svelte';
 
   /** @type {import('./$types').PageData} */
   export let data;

@@ -142,6 +142,11 @@
     font-size: 0.8em;
   }
 
+  .card-footer {
+    background-color: inherit;
+    margin-bottom: 0px;
+  }
+
   .footer {
     margin-top: 10px;
     display: flex;

@@ -7,7 +7,7 @@
   export let platform = '';
   export let subjectId = '';
   export let posts = [];
-  const cardUI = false;
+  const cardUI = true;
 
   // Sort posts by score.
   $: {
