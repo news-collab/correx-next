@@ -111,11 +111,13 @@ export async function POST({ request }) {
 
   // Create posts from tweets.
   await createPostsFromTweets(ctx, tweets, twitterUsers, subject, user);
+  console.log('tweets', tweets);
 
 
   const redditClient = new RedditClient(import.meta.env.VITE_REDDIT_API_KEY, import.meta.env.VITE_REDDIT_API_SECRET, user.reddit_refresh_token);
   const submissions = await redditClient.searchURL(subject.url);
   await createRedditPosts(ctx, submissions, subject, user);
+  console.log('submissions', submissions);
 
   const headers = { 'Content-Type': 'application/json' };
   const body = JSON.stringify({

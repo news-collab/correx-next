@@ -100,7 +100,6 @@
   }
   .title button {
     display: inline-flex;
-    align-items: center;
   }
   button.reddit {
     color: #fff;

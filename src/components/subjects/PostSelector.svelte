@@ -1,12 +1,14 @@
 <script>
   import FaExternalLinkAlt from 'svelte-icons/fa/FaExternalLinkAlt.svelte';
   import { updatePost } from '$lib/api';
-  import { dataset_dev } from 'svelte/internal';
-  //import Tweet from '../Tweet.svelte';
+  import RedditCard from '@/components/posts/RedditCard.svelte';
+  import TwitterCard from '@/components/posts/TwitterCard.svelte';
 
   export let platform = '';
   export let subjectId = '';
   export let posts = [];
+  const cardUI = false;
+
   // Sort posts by score.
   $: {
     if (platform === 'reddit') {
@@ -37,41 +39,47 @@
 </script>
 
 {#if platform === 'reddit'}
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col" />
-        <th scope="col">submission</th>
-        <th scope="col">score</th>
-        <th scope="col">comments</th>
-        <th scope="col">author</th>
-        <th scope="col">created</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each posts as post}
-        <tr class="post-row">
-          <th
-            ><input
-              type="checkbox"
-              checked={post.starred}
-              on:click={handlePostSelect(post.id)}
-            /></th
-          >
-          <th scope="row" class="submission-title"
-            ><span on:click={handlePostSelect(post.id)}>{post.data.title}</span>
-            <a class="permalink" href={`https://reddit.com${post.data.permalink}`} target={post.id}
-              ><div class="icon"><FaExternalLinkAlt /></div></a
-            ></th
-          >
-          <td>{post.data.score}</td>
-          <td>{post.data.num_comments}</td>
-          <td>{post.data.author?.name}</td>
-          <td>{post.created_at}</td>
+  {#if cardUI}
+    {#each posts as post}
+      <RedditCard {post} onSelect={handlePostSelect} />
+    {/each}
+  {:else}
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col" />
+          <th scope="col">submission</th>
+          <th scope="col">score</th>
+          <th scope="col">comments</th>
+          <th scope="col">author</th>
+          <th scope="col">created</th>
         </tr>
-      {/each}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {#each posts as post}
+          <tr class="post-row">
+            <th><input type="checkbox" checked={post.starred} on:click={handlePostSelect} /></th>
+            <th scope="row" class="submission-title"
+              ><span on:click={handlePostSelect(post.id)}>{post.data.title}</span>
+              <a
+                class="permalink"
+                href={`https://reddit.com${post.data.permalink}`}
+                target={post.id}><div class="icon"><FaExternalLinkAlt /></div></a
+              ></th
+            >
+            <td>{post.data.score}</td>
+            <td>{post.data.num_comments}</td>
+            <td>{post.data.author?.name}</td>
+            <td>{post.created_at}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  {/if}
+{:else if cardUI}
+  {#each posts as post}
+    <TwitterCard {post} onSelect={handlePostSelect} />
+  {/each}
 {:else}
   <table class="table">
     <thead>
