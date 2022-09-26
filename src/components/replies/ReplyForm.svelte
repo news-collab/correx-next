@@ -23,7 +23,6 @@
 
 <form>
   <div class="mb-3">
-    <label for="reply" class="form-label">New Reply</label>
     <textarea
       class="form-control"
       id={`reply-post-${post.id}`}
@@ -31,7 +30,7 @@
       bind:value={replyValue}
       disabled={waiting}
     />
-    <div id="replyHelp" class="form-text">Reply to post.</div>
+    <div id="replyHelp" class="form-text">Reply to conversation.</div>
   </div>
   <button type="button" class="btn btn-primary" on:click={handleReply} disabled={waiting}
     >Reply</button

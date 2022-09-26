@@ -62,27 +62,6 @@
       >
     </div>
   </div>
-  <div
-    on:click={() => {
-      active = 'results';
-      navigate();
-    }}
-    class="segment"
-    class:active={isActive('results')}
-  >
-    Conversations
-  </div>
-  <div>&gt;</div>
-  <div
-    on:click={() => {
-      active = 'followup';
-      navigate();
-    }}
-    class="segment"
-    class:active={isActive('followup')}
-  >
-    Followup
-  </div>
 </nav>
 
 <style>
