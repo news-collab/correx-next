@@ -30,20 +30,16 @@
     <div class="watching">
       <button
         class="btn watching-button"
-        class:btn-secondary={!post.starred}
-        class:btn-info={post.starred}
+        class:btn-secondary={post.replies.length === 0}
+        class:btn-info={post.replies.length > 0}
+        data-bs-toggle="modal"
+        data-bs-target="#reply_modal"
         on:click={onSelect(post.id)}
       >
-        {#if post.starred}
-          <div class="icon starred">
-            <MdCheckBox />
-          </div>
-          <div>Followup</div>
+        {#if post.replies.length > 0}
+          {post.replies.length} replies
         {:else}
-          <div class="icon">
-            <MdCheckBoxOutlineBlank />
-          </div>
-          <div>Followup</div>
+          Followup
         {/if}
       </button>
     </div>

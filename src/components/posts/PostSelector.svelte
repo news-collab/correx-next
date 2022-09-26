@@ -3,11 +3,18 @@
   import { updatePost } from '$lib/api';
   import RedditCard from '@/components/posts/RedditCard.svelte';
   import TwitterCard from '@/components/posts/TwitterCard.svelte';
+  import ReplyModal from '@/components/replies/ReplyModal.svelte';
 
   export let platform = '';
   export let subjectId = '';
   export let posts = [];
   const cardUI = true;
+
+  let selectedPost;
+
+  function handleFollowup(post) {
+    selectedPost = post;
+  }
 
   // Sort posts by score.
   $: {
@@ -24,7 +31,10 @@
   async function handlePostSelect(postId) {
     const i = posts.findIndex((p) => p.id === postId);
     const post = posts[i];
-    post.starred = !post.starred;
+    // Select post for followup.
+    selectedPost = post;
+
+    /*post.starred = !post.starred;
 
     const updatedPostResponse = await updatePost(post);
 
@@ -34,7 +44,7 @@
 
       // Reactivity in Svelte is based on assignments.
       posts = [...posts];
-    }
+    }*/
   }
 </script>
 
@@ -121,6 +131,8 @@
     </tbody>
   </table>
 {/if}
+
+<ReplyModal post={selectedPost} />
 
 <style>
   .post-row {

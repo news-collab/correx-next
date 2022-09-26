@@ -7,10 +7,9 @@ export async function PUT({ request, params }) {
 
   try {
     const updatedPost = await updatePost(post);
-    console.debug("updated post", updatedPost)
     return new Response(JSON.stringify(updatedPost));
   } catch (e) {
     console.error(e);
-    return error(500, `could not update post: ${e}`);
+    throw error(500, `could not update post: ${e}`);
   }
 }

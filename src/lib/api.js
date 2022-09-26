@@ -108,3 +108,18 @@ export async function removeIntegration(integration) {
     method: "POST"
   })
 }
+
+export async function reply(post, reply) {
+  const path = `${import.meta.env.VITE_BASE_URL}/api/subjects/${post.subject_id}/posts/${post.id
+    }/replies`;
+
+  return await fetch(path, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      reply
+    })
+  });
+}

@@ -18,6 +18,13 @@ export async function GET({ request, params, url }) {
       posts: {
         where: {
           platform
+        },
+        include: {
+          replies: {
+            include: {
+              author: true
+            }
+          }
         }
       }
     }

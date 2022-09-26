@@ -62,14 +62,16 @@ export async function getPost(id) {
 
 export async function createReply(data) {
   const prisma = new PrismaClient();
-  return await prisma.replies.create({
+  let reply = await prisma.replies.create({
     data
   });
-}
 
-export async function createRedditReply(data) {
-  return createReply({
-    platform: platform.REDDIT,
-    ...data
-  })
+  return await prisma.replies.findUnique({
+    where: {
+      id: reply.id
+    },
+    include: {
+      author: true
+    }
+  });
 }

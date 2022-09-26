@@ -1,6 +1,6 @@
 <script>
   import moment from 'moment';
-  import PostReplyForm from '@/components/subjects/PostReplyForm.svelte';
+  import ReplyForm from '@/components/replies/ReplyForm.svelte';
 
   export let post;
 
@@ -20,7 +20,7 @@
     <div class="reply">
       <div class="header">
         <p>
-          <span class="author">{reply.data.author}</span>
+          <span class="author">{reply.author.twitter_username}</span>
           wrote on
           <span class="created">
             {moment(reply.created_at).format('dddd, MMMM Do YYYY, h:mm:ss a')}
@@ -32,7 +32,7 @@
   {/each}
 </div>
 
-<PostReplyForm {post} on:replyCreated={handleNewReply} />
+<ReplyForm {post} on:replyCreated={handleNewReply} />
 
 <style>
   .replies {

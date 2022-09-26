@@ -102,16 +102,19 @@ export async function POST({ request }) {
   });
   // @ts-ignore
   const tweets = twitterSearchResponse.data;
-  console.log('tweets', tweets);
-  // @ts-ignore
-  const twitterUsers = twitterSearchResponse.includes.users;
 
-  getTweetsSpan.setAttribute("tweets", tweets.length);
-  getTweetsSpan.end();
+  if (tweets) {
+    console.log('tweets', tweets);
+    // @ts-ignore
+    const twitterUsers = twitterSearchResponse.includes.users;
 
-  // Create posts from tweets.
-  await createPostsFromTweets(ctx, tweets, twitterUsers, subject, user);
-  console.log('tweets', tweets);
+    getTweetsSpan.setAttribute("tweets", tweets.length);
+    getTweetsSpan.end();
+
+    // Create posts from tweets.
+    await createPostsFromTweets(ctx, tweets, twitterUsers, subject, user);
+    console.log('tweets', tweets);
+  }
 
 
   const redditClient = new RedditClient(import.meta.env.VITE_REDDIT_API_KEY, import.meta.env.VITE_REDDIT_API_SECRET, user.reddit_refresh_token);

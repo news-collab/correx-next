@@ -1,4 +1,5 @@
 import Twitter from "twitter-v2";
+import TwitterApi from 'twitter-api-v2';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -13,6 +14,17 @@ export function newTwitterClient(userToken, userTokenSecret) {
   };
 
   return new Twitter(clientConfig);
+}
+
+export function newTwitterAPI(userToken, userTokenSecret) {
+  const config = {
+    appKey: import.meta.env.VITE_TWITTER_API_KEY,
+    appSecret: import.meta.env.VITE_TWITTER_API_SECRET,
+    accessToken: userToken,
+    accessSecret: userTokenSecret,
+  };
+
+  return new TwitterApi(config);
 }
 
 export async function getTweets(postURL, user) {
@@ -70,14 +82,9 @@ export async function getConversation(conversationId, user) {
   }
 }
 
-export async function sendTweets(data, user) {
-  const client = newTwitterClient(user.token, user.tokenSecret);
-  const tweetData = {
-    status: data.status,
-    in_reply_to_status_id: data.in_reply_to_status_id,
-    auto_populate_reply_metadata: data.auto_populate_reply_metadata,
-  };
-  return await client.post("statuses/update", tweetData);
+export async function reply(data, user) {
+  const client = newTwitterAPI(user.twitter_access_token, user.twitter_access_secret);
+  return await client.v1.reply(data.status, data.in_reply_to_status_id);
 }
 
 export async function lookupUsers(screenname, user) {

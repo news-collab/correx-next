@@ -1,5 +1,5 @@
 <script>
-  import { createReply } from '$lib/db';
+  import { reply } from '$lib/api';
   import { createEventDispatcher } from 'svelte';
 
   export let post;
@@ -10,20 +10,8 @@
   async function handleReply() {
     try {
       waiting = true;
-      const path = `${import.meta.env.VITE_BASE_URL}/api/subjects/${post.subject_id}/posts/${
-        post.id
-      }/replies/reddit`;
-
-      const createReplyResponse = await fetch(path, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          reply: replyValue
-        })
-      });
-      const newReply = await createReplyResponse.json();
+      const newReplyResponse = await reply(post, replyValue);
+      const newReply = await newReplyResponse.json();
       dispatch('replyCreated', newReply);
     } catch (e) {
       console.error('could not create reply', e);
