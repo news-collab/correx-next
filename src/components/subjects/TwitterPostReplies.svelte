@@ -1,5 +1,5 @@
 <script>
-  import TwitterReplies from '@/components/subjects/TwitterReplies.svelte';
+  import TwitterReplies from '@/components/replies/TwitterReplies.svelte';
 
   export let posts = [];
 
