@@ -4,8 +4,6 @@
   export let data;
 </script>
 
-{JSON.stringify(data)}
-
 <NavBar user={data.user} />
 <div class="main container-xl">
   <slot />
