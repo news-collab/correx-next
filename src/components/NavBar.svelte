@@ -1,7 +1,5 @@
 <script>
-  import { page } from '$app/stores';
-  import { signOut as authSignOut } from 'sk-auth/client';
-  import { goto } from '$app/navigation';
+  import { goto, invalidateAll } from '$app/navigation';
 
   let logoutModal = {
     open: false,
@@ -9,12 +7,13 @@
     onClosed: false
   };
 
-  let { user } = $page.data;
+  export let user;
 
-  function logout() {
+  async function logout() {
     document.cookie = 'session= ; expires = Thu, 01 Jan 1970 00:00:00 GMT';
 
     logoutModal.open = false;
+    await invalidateAll();
     goto('/login');
   }
 </script>

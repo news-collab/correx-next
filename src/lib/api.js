@@ -123,3 +123,11 @@ export async function reply(post, reply) {
     })
   });
 }
+
+export async function me() {
+  return await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/me`, {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+}

@@ -1,7 +1,7 @@
 <script>
   import { required, length, confirmation } from '$lib/validation/validators';
   import { login } from '$lib/api';
-  import { goto } from '$app/navigation';
+  import { goto, invalidateAll } from '$app/navigation';
 
   let loginSubmitted = false;
   let email = '';
@@ -33,6 +33,7 @@
       const response = await login(loginData);
 
       if (response.ok) {
+        await invalidateAll();
         goto('/');
       }
     }
