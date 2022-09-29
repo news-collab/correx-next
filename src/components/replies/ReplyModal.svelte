@@ -15,9 +15,9 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
       </div>
       <div class="modal-body">
-        {#if post.platform === platform.TWITTER}
+        {#if post.platform === 'TWITTER'}
           <TwitterReplies {post} />
-        {:else if post.platform === platform.REDDIT}
+        {:else if post.platform === 'REDDIT'}
           <RedditReplies {post} />
         {/if}
       </div>
