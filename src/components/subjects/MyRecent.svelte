@@ -23,31 +23,35 @@
     {#each subjects as subject}
       <tr>
         <td class="subject">
-          <div class="title text-truncate">
-            {subject.metadata && subject.metadata.title ? subject.metadata.title : subject.url}
-            <button
-              type="button"
-              class="btn btn-sm reddit"
-              on:click={() => {
-                goto(`/subjects/${subject.id}/reddit`);
-              }}
-              ><div class="icon">
-                <FaReddit />
-              </div>
-              Reddit</button
-            >
+          <div class="subject-header">
+            <div class="title text-truncate">
+              {subject.metadata && subject.metadata.title ? subject.metadata.title : subject.url}
+            </div>
+            <div class="platform-buttons">
+              <button
+                type="button"
+                class="btn btn-sm reddit"
+                on:click={() => {
+                  goto(`/subjects/${subject.id}/reddit`);
+                }}
+                ><div class="icon">
+                  <FaReddit />
+                </div>
+                Reddit</button
+              >
 
-            <button
-              type="button"
-              class="btn btn-sm twitter"
-              on:click={() => {
-                goto(`/subjects/${subject.id}/twitter`);
-              }}
-              ><div class="icon">
-                <FaTwitterSquare />
-              </div>
-              Twitter</button
-            >
+              <button
+                type="button"
+                class="btn btn-sm twitter"
+                on:click={() => {
+                  goto(`/subjects/${subject.id}/twitter`);
+                }}
+                ><div class="icon">
+                  <FaTwitterSquare />
+                </div>
+                Twitter</button
+              >
+            </div>
           </div>
           {#if subject.metadata && subject.metadata.title}
             <div class="text-truncate url">{subject.url}</div>
@@ -76,8 +80,17 @@
     cursor: pointer;
   }
 
+  .subject-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .title {
     font-weight: bold;
+    max-width: 80%;
+  }
+
+  .platform-buttons {
   }
 
   .submitted-footer {
@@ -94,6 +107,7 @@
   }
 
   button .icon {
+    display: inline-block;
     margin-right: 5px;
     height: 12px;
     width: 12px;
