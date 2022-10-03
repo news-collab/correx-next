@@ -1,8 +1,16 @@
 <script>
   import moment from 'moment';
   import ReplyForm from '@/components/replies/ReplyForm.svelte';
+  import { getConversation } from '$lib/api';
 
   export let post;
+  let replies = [];
+
+  $: {
+    getConversation(post.subject_id, post.id).then((resp) =>
+      resp.json().then((json) => (replies = json))
+    );
+  }
 
   function handleNewReply(e) {
     const { detail: newReply } = e;

@@ -61,8 +61,19 @@ export async function search(url, tokens) {
 }
 
 export async function getConversation(conversationId, user) {
-  const client = newTwitterClient(user.token, user.tokenSecret);
+  const query = encodeURIComponent(`conversation_id:${conversationId}`);
 
+  const client = newTwitterAPI(user.twitter_access_token, user.twitter_access_secret);
+
+  try {
+    return await client.v2.search(query, { 'media.fields': 'url' });
+  } catch (error) {
+    console.error(`error getting tweets: ${error}`);
+    return [];
+  }
+
+  /*const client = newTwitterClient(user.twitter_access_token, user.twitter_access_secret);
+  console.log('conversationId', conversationId)
   const query = encodeURIComponent(`conversation_id:${conversationId}`);
   const tweetFields = [
     "in_reply_to_user_id",
@@ -79,7 +90,7 @@ export async function getConversation(conversationId, user) {
     return {
       data: [],
     };
-  }
+  }*/
 }
 
 export async function reply(data, user) {

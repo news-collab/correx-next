@@ -4,6 +4,26 @@ import { reply as twitterReply } from '$lib/twitter/twitterV2';
 import { createReply, getPost, getUser } from '$lib/db';
 import { getUserSession } from "$lib/session";
 import { platform } from "prisma/prisma-client";
+import { getConversation } from '@/lib/twitter/twitterV2';
+
+/** @type {import('./$types').RequestHandler} */
+export async function GET({ params, request }) {
+  const session = getUserSession(request.headers);
+  const user = await getUser(session.user.id);
+
+  if (!user) {
+    throw error(403, 'login to reply');
+  }
+  const post = await getPost(params.postId);
+
+  if (!post) {
+    throw error(500, "could not get post")
+  }
+
+  const conversation = await getConversation(post.platform_id, user);
+  console.log('conversation', conversation);
+  return new Response(JSON.stringify(conversation))
+}
 
 /** @type {import('../../../../../../../../.svelte-kit/types/src/routes/api/subjects/[subjectId]/posts/[postId]/replies/reddit/$types').RequestHandler} */
 export async function POST({ params, request }) {

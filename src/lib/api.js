@@ -4,10 +4,9 @@ export async function getUserSubjects(user) {
   });
 }
 
-export async function getConversation(id) {
-  return await fetch(`conversation.json`, {
-    method: "POST",
-    body: JSON.stringify({ id }),
+export async function getConversation(subjectId, postId) {
+  return await fetch(`${import.meta.env.VITE_BASE_URL}/api/subjects/${subjectId}/posts/${postId}/replies`, {
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
