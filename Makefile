@@ -14,7 +14,7 @@ help: ## Display this help section.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "\033[36m%-38s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 network: ## Create the container network.
-	docker inspect $(network_name) 2>&1 > /dev/null || docker network create $(network_name)
+	docker network inspect $(network_name) 2>&1 > /dev/null || docker network create $(network_name)
 
 db-volume: ## Create the database volumes.
 	docker volume inspect $(db_name) &> /dev/null || docker volume create $(db_name)
