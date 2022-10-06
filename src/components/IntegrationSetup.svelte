@@ -1,6 +1,6 @@
 <script>
   import { getStores, navigating, page } from '$app/stores';
-  export let user;
+  export let user = {};
 </script>
 
 {#if $page.url.pathname != '/integrations' && (!user.reddit_access_token || !user.twitter_access_token)}
