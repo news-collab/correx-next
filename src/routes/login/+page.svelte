@@ -33,8 +33,9 @@
       const response = await login(loginData);
 
       if (response.ok) {
+        const location = response.headers.get('Location');
         await invalidateAll();
-        goto('/search');
+        goto(location);
       }
     }
   }

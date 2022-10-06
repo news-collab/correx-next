@@ -22,9 +22,16 @@
   }
 </script>
 
-<div class="login">
+<div class="integrations">
+  <div class="help">
+    <h1>Integrations</h1>
+    <p>
+      Correx uses integrations to perform actions on your behalf. For example, when replying to a
+      tweet, Correx uses your own Twitter account so that the reply comes from you.
+    </p>
+  </div>
   <div class="twitter">
-    <h1>Twitter</h1>
+    <h2>Twitter</h2>
     {#if user.twitter_access_token}
       <p>
         Signed in as <a href="https://www.twitter.com/{user.twitter_username}" target="_twitter"
@@ -49,7 +56,7 @@
   </div>
 
   <div class="reddit">
-    <h1>Reddit</h1>
+    <h2>Reddit</h2>
 
     {#if user.reddit_access_token}
       <p>
@@ -81,7 +88,7 @@
 </div>
 
 <style>
-  .login {
+  .integrations {
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
