@@ -34,7 +34,7 @@
 
       if (response.ok) {
         await invalidateAll();
-        goto('/');
+        goto('/search');
       }
     }
   }
