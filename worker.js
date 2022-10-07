@@ -15,7 +15,12 @@ async function getConversation(conversationId, config) {
   const query = encodeURIComponent(`conversation_id:${conversationId}`);
   const client = new TwitterApi(config);
 
-  return await client.v2.search(`conversation_id:${conversationId}`, { 'media.fields': 'url' });
+  return await client.v2.search(`conversation_id:${conversationId}`, {
+    'media.fields': 'url',
+    expansions: ['author_id'],
+    'tweet.fields': ['created_at'],
+    'user.fields': ['username']
+  });
 }
 
 async function updateTwitterPost(post) {
@@ -35,6 +40,28 @@ async function updateTwitterPost(post) {
   const tweets = await getConversation(post.platform_id, config);
   for await (const tweet of tweets) {
     console.log('tweet', tweet);
+    const authorUser = tweets.includes.author(tweet);
+    const replyData = {
+      platform: 'TWITTER',
+      platform_id: tweet.id,
+      post_id: post.id,
+      data: {
+        body: tweet.text,
+        permalink: `https://www.twitter.com/${authorUser.username}/statuses/${tweet.id}`,
+        created_at: tweet.created_at,
+        author_id: tweet.author_id,
+        author_username: authorUser.username
+      },
+      created_at: moment(tweet.created_at).utc().toDate()
+    };
+    console.log('replyData', replyData);
+    await prisma.replies.upsert({
+      where: {
+        platform_id: replyData.platform_id
+      },
+      create: replyData,
+      update: replyData
+    });
   }
   /*await prisma.posts.update({
     data: {

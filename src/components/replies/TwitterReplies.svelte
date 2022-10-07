@@ -28,7 +28,7 @@
     <div class="reply">
       <div class="header">
         <p>
-          <span class="author">{reply.author.twitter_username}</span>
+          <span class="author">{reply.data.author_username}</span>
           wrote on
           <span class="created">
             {moment(reply.created_at).format('dddd, MMMM Do YYYY, h:mm:ss a')}

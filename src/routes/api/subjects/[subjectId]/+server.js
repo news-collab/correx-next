@@ -1,17 +1,17 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
 import opentelemetry from '@opentelemetry/api';
 import { error } from '@sveltejs/kit';
 
 const tracer = opentelemetry.trace.getTracer('correx');
 
 export async function GET({ request, params, url }) {
-  const prisma = new PrismaClient()
+  const prisma = new PrismaClient();
   const parentSpan = tracer.startSpan('api-get-source');
   const ctx = opentelemetry.trace.setSpan(opentelemetry.context.active(), parentSpan);
 
   const { subjectId: id } = params;
   const platform = url.searchParams.get('platform');
-  const getSubjectSpan = tracer.startSpan("db-get-subject", undefined, ctx);
+  const getSubjectSpan = tracer.startSpan('db-get-subject', undefined, ctx);
   const subject = await prisma.subjects.findUnique({
     where: { id },
     include: {
@@ -21,6 +21,9 @@ export async function GET({ request, params, url }) {
         },
         include: {
           replies: {
+            orderBy: {
+              created_at: 'asc'
+            },
             include: {
               author: true
             }
@@ -30,8 +33,8 @@ export async function GET({ request, params, url }) {
     }
   });
 
-  getSubjectSpan.setAttribute("id", subject.id);
-  getSubjectSpan.setAttributes("posts_count", subject.posts.length);
+  getSubjectSpan.setAttribute('id', subject.id);
+  getSubjectSpan.setAttributes('posts_count', subject.posts.length);
   getSubjectSpan.end();
 
   parentSpan.end();
@@ -39,7 +42,7 @@ export async function GET({ request, params, url }) {
   if (subject) {
     return new Response(JSON.stringify(subject), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     });
   }
 

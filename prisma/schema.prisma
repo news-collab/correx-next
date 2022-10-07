@@ -34,7 +34,7 @@ model posts {
 model replies {
   id          String    @id @default(uuid())
   platform    platform  @default(TWITTER)
-  platform_id String    @db.VarChar
+  platform_id String    @db.VarChar @unique
   data        Json
   post_id     String?
   author_id   String?
