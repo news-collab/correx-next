@@ -1,7 +1,7 @@
-import { platform, PrismaClient } from '@prisma/client'
+import { platform, PrismaClient } from '@prisma/client';
 
 export async function getUser(id) {
-  const prisma = new PrismaClient()
+  const prisma = new PrismaClient();
   return await prisma.users.findUnique({
     where: {
       id
@@ -10,17 +10,17 @@ export async function getUser(id) {
 }
 
 export async function updatePost(data) {
-  const prisma = new PrismaClient()
+  const prisma = new PrismaClient();
   return await prisma.posts.update({
     where: {
       id: data.id
     },
-    data,
-  })
+    data
+  });
 }
 
 export async function starPosts(postIds) {
-  const prisma = new PrismaClient()
+  const prisma = new PrismaClient();
   return await prisma.posts.updateMany({
     where: {
       id: {
@@ -30,11 +30,11 @@ export async function starPosts(postIds) {
     data: {
       starred: true
     }
-  })
+  });
 }
 
 export async function starredPosts(subjectId, platform) {
-  const prisma = new PrismaClient()
+  const prisma = new PrismaClient();
   return await prisma.posts.findMany({
     where: {
       subject_id: subjectId,
@@ -52,8 +52,17 @@ export async function starredPosts(subjectId, platform) {
 }
 
 export async function getPost(id) {
-  const prisma = new PrismaClient()
+  const prisma = new PrismaClient();
   return await prisma.posts.findUnique({
+    where: {
+      id
+    }
+  });
+}
+
+export async function getReply(id) {
+  const prisma = new PrismaClient();
+  return await prisma.replies.findUnique({
     where: {
       id
     }

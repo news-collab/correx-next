@@ -7,12 +7,12 @@ import * as dotenv from 'dotenv';
 
 // Initialize environment variables.
 dotenv.config();
-console.log('env');
+
 // Sleep for 1 minute.
 const sleepMS = 60000;
 const prisma = new PrismaClient();
 
-async function getConversation(conversationId, config) {
+async function getTwitterReplies(conversationId, config) {
   const query = encodeURIComponent(`conversation_id:${conversationId}`);
   const client = new TwitterApi(config);
 
@@ -38,31 +38,34 @@ async function updateTwitterPost(post) {
     accessSecret: user.twitter_access_secret
   };
 
-  const tweets = await getConversation(post.platform_id, config);
-  for await (const tweet of tweets) {
-    console.log('tweet', tweet);
-    const authorUser = tweets.includes.author(tweet);
-    const replyData = {
-      platform: 'TWITTER',
-      platform_id: tweet.id,
-      post_id: post.id,
-      data: {
-        body: tweet.text,
-        permalink: `https://www.twitter.com/${authorUser.username}/statuses/${tweet.id}`,
-        created_at: tweet.created_at,
-        author_id: tweet.author_id,
-        author_username: authorUser.username
-      },
-      created_at: moment(tweet.created_at).utc().toDate()
-    };
-    console.log('replyData', replyData);
-    await prisma.replies.upsert({
-      where: {
-        platform_id: replyData.platform_id
-      },
-      create: replyData,
-      update: replyData
-    });
+  const replies = post.replies;
+  for await (const reply of replies) {
+    const tweets = await getTwitterReplies(reply.platform_id, config);
+    for await (const tweet of tweets) {
+      console.log('tweet', tweet);
+      const authorUser = tweets.includes.author(tweet);
+      const replyData = {
+        platform: 'TWITTER',
+        platform_id: tweet.id,
+        post_id: post.id,
+        data: {
+          body: tweet.text,
+          permalink: `https://www.twitter.com/${authorUser.username}/statuses/${tweet.id}`,
+          created_at: tweet.created_at,
+          author_id: tweet.author_id,
+          author_username: authorUser.username
+        },
+        created_at: moment(tweet.created_at).utc().toDate()
+      };
+      console.log('replyData', replyData);
+      await prisma.replies.upsert({
+        where: {
+          platform_id: replyData.platform_id
+        },
+        create: replyData,
+        update: replyData
+      });
+    }
   }
   /*await prisma.posts.update({
     data: {
@@ -95,41 +98,39 @@ async function updateRedditPost(post) {
     refreshToken: user.reddit_refresh_token,
     userAgent: 'Correx for Reddit 1.0 by News Collab'
   });
-
-  const submissions = await getConversation(post.platform_id, config);
-  for await (const tweet of tweets) {
-    console.log('tweet', tweet);
-    const authorUser = tweets.includes.author(tweet);
-    const replyData = {
-      platform: 'TWITTER',
-      platform_id: tweet.id,
-      post_id: post.id,
-      data: {
-        body: tweet.text,
-        permalink: `https://www.twitter.com/${authorUser.username}/statuses/${tweet.id}`,
-        created_at: tweet.created_at,
-        author_id: tweet.author_id,
-        author_username: authorUser.username
-      },
-      created_at: moment(tweet.created_at).utc().toDate()
-    };
-    console.log('replyData', replyData);
-    await prisma.replies.upsert({
-      where: {
-        platform_id: replyData.platform_id
-      },
-      create: replyData,
-      update: replyData
-    });
-  }
-  /*await prisma.posts.update({
-    data: {
-      updated_at: moment().utc().toDate()
-    },
-    where: {
-      id: post.id
+  console.log('replies', post.replies);
+  for await (const reply of post.replies) {
+    const comment = await client.getComment(reply.platform_id);
+    const score = await comment.score;
+    //const replies = await getComment(post.platform_id, config);
+    console.log('comment score', score);
+    /*for await (const tweet of tweets) {
+      console.log('tweet', tweet);
+      const authorUser = tweets.includes.author(tweet);
+      const replyData = {
+        platform: 'TWITTER',
+        platform_id: tweet.id,
+        post_id: post.id,
+        data: {
+          body: tweet.text,
+          permalink: `https://www.twitter.com/${authorUser.username}/statuses/${tweet.id}`,
+          created_at: tweet.created_at,
+          author_id: tweet.author_id,
+          author_username: authorUser.username
+        },
+        created_at: moment(tweet.created_at).utc().toDate()
+      };
+      console.log('replyData', replyData);
+      await prisma.replies.upsert({
+        where: {
+          platform_id: replyData.platform_id
+        },
+        create: replyData,
+        update: replyData
+      });
     }
-  });*/
+  */
+  }
 }
 
 async function worker() {
@@ -140,10 +141,13 @@ async function worker() {
       updated_at: {
         lte: lastUpdatedThreshold
       }
+    },
+    include: {
+      replies: true
     }
   });
 
-  for (var i = 0; i < posts.length; i++) {
+  for (let i = 0; i < posts.length; i++) {
     const post = posts[i];
     console.log(`post: ${post.id} updated: ${post.updated_at}`);
 
