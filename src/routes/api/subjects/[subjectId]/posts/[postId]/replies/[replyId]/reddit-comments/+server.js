@@ -29,7 +29,13 @@ export async function GET({ params, request }) {
     user.reddit_refresh_token
   );
 
-  const replies = await redditClient.commentReplies(reply.platform_id);
+  let replies = [];
+  const commentResponse = await redditClient.commentReplies(reply.platform_id);
+  if (commentResponse.length) {
+    replies = commentResponse;
+  } else {
+    replies = [commentResponse];
+  }
   console.log('replies', replies);
   return new Response(JSON.stringify(replies));
 }
