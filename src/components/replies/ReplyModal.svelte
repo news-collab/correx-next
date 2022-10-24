@@ -30,6 +30,5 @@
 
 <style>
   .modal-body {
-    max-height: 400px;
   }
 </style>

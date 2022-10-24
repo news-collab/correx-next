@@ -1,26 +1,28 @@
 <script>
   import moment from 'moment';
+  import { Circle2 } from 'svelte-loading-spinners';
   import ReplyForm from '@/components/replies/ReplyForm.svelte';
   import { getConversation } from '$lib/api';
+  import { getTwitterReplies } from '@/lib/api';
 
-  export let post;
-  let replies = [];
+  export let subjectId;
+  export let postId;
+  export let reply = {};
+  let loading = true;
 
-  $: {
-    getConversation(post.subject_id, post.id).then((resp) =>
-      resp.json().then((json) => (replies = json))
-    );
+  let replyComments = [];
+
+  function updateReplyComments(comments) {
+    replyComments = comments;
   }
 
-  function handleNewReply(e) {
-    const { detail: newReply } = e;
-    const replies = [...post.replies, newReply];
-
-    post = {
-      ...post,
-      replies
-    };
-  }
+  $: (async () => {
+    loading = true;
+    console.log('twitter reply changes', subjectId, postId, reply.id);
+    const replyCommentsResponse = await getRedditReplies(subjectId, postId, reply.id);
+    updateReplyComments(await replyCommentsResponse.json());
+    loading = false;
+  })();
 </script>
 
 <div class="replies">
