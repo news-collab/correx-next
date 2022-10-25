@@ -18,22 +18,9 @@ export async function getConversation(subjectId, postId) {
 
 export async function getRedditReplies(subjectId, postId, replyId) {
   return await fetch(
-    `${import.meta.env.VITE_BASE_URL
+    `${
+      import.meta.env.VITE_BASE_URL
     }/api/subjects/${subjectId}/posts/${postId}/replies/${replyId}/reddit-comments`,
-    {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-  );
-}
-
-export async function getTwitterReplies(subjectId, postId, replyId) {
-  return await fetch(
-    `${import.meta.env.VITE_BASE_URL
-    }/api/subjects/${subjectId}/posts/${postId}/replies/${replyId}/twitter-comments`,
     {
       method: 'GET',
       credentials: 'include',
@@ -141,8 +128,9 @@ export async function removeIntegration(integration) {
 }
 
 export async function reply(post, reply) {
-  const path = `${import.meta.env.VITE_BASE_URL}/api/subjects/${post.subject_id}/posts/${post.id
-    }/replies`;
+  const path = `${import.meta.env.VITE_BASE_URL}/api/subjects/${post.subject_id}/posts/${
+    post.id
+  }/replies`;
 
   return await fetch(path, {
     method: 'POST',
