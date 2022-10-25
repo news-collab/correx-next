@@ -18,7 +18,7 @@
 
 <div class="replies">
   {#each post.replies as reply}
-    <RedditReply subjectId={post.subject_id} postId={post.id} reply={reply} />
+    <RedditReply subjectId={post.subject_id} postId={post.id} {reply} />
   {/each}
 </div>
 
