@@ -1,16 +1,8 @@
 <script>
-  import moment from 'moment';
   import ReplyForm from '@/components/replies/ReplyForm.svelte';
-  import { getConversation } from '$lib/api';
+  import TwitterReply from '@/components/replies/TwitterReply.svelte';
 
   export let post;
-  let replies = [];
-
-  $: {
-    getConversation(post.subject_id, post.id).then((resp) =>
-      resp.json().then((json) => (replies = json))
-    );
-  }
 
   function handleNewReply(e) {
     const { detail: newReply } = e;
@@ -25,18 +17,7 @@
 
 <div class="replies">
   {#each post.replies as reply}
-    <div class="reply">
-      <div class="header">
-        <p>
-          <span class="author">{reply.data.author_username}</span>
-          wrote on
-          <span class="created">
-            {moment(reply.created_at).format('dddd, MMMM Do YYYY, h:mm:ss a')}
-          </span>
-        </p>
-      </div>
-      <div class="body"><p>{reply.data.body}</p></div>
-    </div>
+    <TwitterReply subjectId={post.subject_id} postId={post.id} {reply} />
   {/each}
 </div>
 
