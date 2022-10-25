@@ -62,7 +62,6 @@ export async function search(url, tokens) {
 
 export async function getConversation(conversationId, user) {
   const query = encodeURIComponent(`conversation_id:${conversationId}`);
-
   const client = newTwitterAPI(user.twitter_access_token, user.twitter_access_secret);
 
   try {
