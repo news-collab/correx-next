@@ -33,7 +33,6 @@
     const post = posts[i];
     // Select post for followup.
     selectedPost = post;
-    console.log('selected post', selectedPost);
 
     /*post.starred = !post.starred;
 
