@@ -60,6 +60,18 @@ export async function search(url, tokens) {
   }
 }
 
+export async function getTwitterReplies(conversationId, user) {
+  const client = newTwitterAPI(user.twitter_access_token, user.twitter_access_secret);
+  const queryString = `in_reply_to_tweet_id:${conversationId}`;
+
+  return await client.v2.search(queryString, {
+    'media.fields': 'url',
+    expansions: ['author_id'],
+    'tweet.fields': ['created_at'],
+    'user.fields': ['username']
+  });
+}
+
 export async function getConversation(conversationId, user) {
   const query = encodeURIComponent(`conversation_id:${conversationId}`);
   const client = newTwitterAPI(user.twitter_access_token, user.twitter_access_secret);

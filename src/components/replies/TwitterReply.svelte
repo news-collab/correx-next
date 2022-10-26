@@ -4,21 +4,23 @@
   import { getTwitterReplies } from '@/lib/api';
 
   export let subjectId;
-  export let postId;
+  export let post;
   export let reply = {};
   let loading = true;
 
   let replyComments = [];
 
   function updateReplyComments(comments) {
+    console.log(comments);
     replyComments = comments;
   }
 
   $: (async () => {
     loading = true;
-    console.log('twitter reply changes', subjectId, postId, reply.id);
-    const replyCommentsResponse = await getTwitterReplies(subjectId, postId, reply.id);
-    updateReplyComments(await replyCommentsResponse.json());
+    console.log('twitter reply changes', subjectId, post.id, reply.id);
+    const replyCommentsResponse = await getTwitterReplies(subjectId, post.id, reply.id);
+    const tweetData = await replyCommentsResponse.json();
+    updateReplyComments(tweetData);
     loading = false;
   })();
 </script>
@@ -36,47 +38,22 @@
           <p>
             <span class="author"
               ><a
-                href={`https://www.reddit.com/u/${comment.author}`}
-                target="reddit_${comment.author}">{comment.author}</a
+                href={`https://www.twitter.com/${comment.author.username}`}
+                target="twitter_${comment.tweet.author_id}">{comment.author.username}</a
               ></span
             >
             wrote on
             <span class="created">
-              {moment(comment.created_utc * 1000).format('dddd, MMMM Do YYYY, h:mm:ss a')}
+              {moment(comment.tweet.created_at).format('dddd, MMMM Do YYYY, h:mm:ss a')}
             </span>
           </p>
         </div>
-        <div class="body"><p>{@html comment.body_html}</p></div>
+        <div class="body"><p>{@html comment.tweet.text}</p></div>
         <div class="footer">
           <a
-            href={`https://www.reddit.com/${comment.permalink}`}
-            target="reddit_comment_${comment.id}">permalink</a
+            href={`https://www.twitter.com/${comment.author.username}/status/${comment.tweet.id}`}
+            target="twitter_${comment.tweet.id}">permalink</a
           >
-        </div>
-        <div class="replies">
-          {#each comment.replies as reply}
-            <div class="header">
-              <p>
-                <span class="author"
-                  ><a
-                    href={`https://www.reddit.com/u/${comment.author}`}
-                    target="reddit_${comment.author}">{reply.author}</a
-                  ></span
-                >
-                wrote on
-                <span class="created">
-                  {moment(reply.created_utc * 1000).format('dddd, MMMM Do YYYY, h:mm:ss a')}
-                </span>
-              </p>
-            </div>
-            <div class="body"><p>{@html reply.body_html}</p></div>
-            <div class="footer">
-              <a
-                href={`https://www.reddit.com/${reply.permalink}`}
-                target="reddit_comment_${reply.id}">permalink</a
-              >
-            </div>
-          {/each}
         </div>
       </div>
     {/each}

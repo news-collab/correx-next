@@ -17,7 +17,7 @@
 
 <div class="replies">
   {#each post.replies as reply}
-    <TwitterReply subjectId={post.subject_id} postId={post.id} {reply} />
+    <TwitterReply subjectId={post.subject_id} {post} {reply} />
   {/each}
 </div>
 
