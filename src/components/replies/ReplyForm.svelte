@@ -12,12 +12,13 @@
       waiting = true;
       const newReplyResponse = await reply(post, replyValue);
       const newReply = await newReplyResponse.json();
-      dispatch('replyCreated', newReply);
+      await dispatch('replyCreated', newReply);
     } catch (e) {
       console.error('could not create reply', e);
     }
 
     waiting = false;
+    replyValue = '';
   }
 </script>
 
