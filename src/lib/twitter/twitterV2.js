@@ -147,3 +147,13 @@ export async function sendDirectMessage(message, invitee, user) {
 
   return await client.post("direct_messages/events/new.json", event);
 }
+
+export async function getTweet(id, user) {
+  const client = newTwitterAPI(user.twitter_access_token, user.twitter_access_secret);
+  const tweetOfId20 = await client.v2.singleTweet(id, {
+    expansions: [
+      'entities.mentions.username',
+      'in_reply_to_user_id',
+    ],
+  });
+}
