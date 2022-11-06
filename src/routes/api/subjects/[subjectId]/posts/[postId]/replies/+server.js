@@ -3,7 +3,7 @@ import { Client as RedditClient } from '$lib/reddit/client';
 import { reply as twitterReply } from '$lib/twitter/twitterV2';
 import { createReply, getPost, getUser } from '$lib/db';
 import { getUserSession } from "$lib/session";
-import { platform } from "prisma/prisma-client";
+import { platform } from "@prisma/client";
 import { getConversation } from '@/lib/twitter/twitterV2';
 
 /** @type {import('./$types').RequestHandler} */
