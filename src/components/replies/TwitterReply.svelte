@@ -21,31 +21,34 @@
     const replyCommentsResponse = await getTwitterReplies(subjectId, post.id, reply.id);
     const tweetData = await replyCommentsResponse.json();
     updateReplyComments(tweetData);
+    console.log('tweet data', tweetData);
     loading = false;
   })();
 </script>
 
 <div class="comment-replies">
-  <div class="comment">
-    <div class="header">
-      <p>
-        <span class="author"
-          ><a
-            href={`https://www.twitter.com/${reply.author.twitter_username}`}
-            target="twitter_${reply.author.twitter_user_id}">{reply.author.twitter_username}</a
-          ></span
-        >
-        wrote on
-        <span class="created">
-          {moment(reply.created_at).format('dddd, MMMM Do YYYY, h:mm:ss a')}
-        </span>
-      </p>
+  {#if reply.author}
+    <div class="comment">
+      <div class="header">
+        <p>
+          <span class="author"
+            ><a
+              href={`https://www.twitter.com/${reply.author.twitter_username}`}
+              target="twitter_${reply.author.twitter_user_id}">{reply.author.twitter_username}</a
+            ></span
+          >
+          wrote on
+          <span class="created">
+            {moment(reply.created_at).format('dddd, MMMM Do YYYY, h:mm:ss a')}
+          </span>
+        </p>
+      </div>
+      <div class="body"><p>{@html reply.data.body}</p></div>
+      <div class="footer">
+        <a href={reply.data.permalink} target="twitter_${reply.platform_id}">permalink</a>
+      </div>
     </div>
-    <div class="body"><p>{@html reply.data.body}</p></div>
-    <div class="footer">
-      <a href={reply.data.permalink} target="twitter_${reply.platform_id}">permalink</a>
-    </div>
-  </div>
+  {/if}
   {#if loading && replyComments.length === 0}
     <div class="loading">
       <Circle2 size="60" color="#FF3E00" unit="px" duration="1s" />
