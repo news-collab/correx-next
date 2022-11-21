@@ -18,6 +18,9 @@
         <a href="https://www.reddit.com/u/{post.data.author.name}" target="author_{post.id}"
           >{post.data.author.name}</a
         >
+        <a href={`https://reddit.com/${post.data.permalink}`} target="reddit_${post.platform_id}"
+          >wrote</a
+        >
         on
         <div class="created">
           {moment.parseZone(post.data.created_at).format('MMMM Do YYYY, h:mm:ss a')}
