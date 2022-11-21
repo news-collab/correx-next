@@ -9,6 +9,7 @@
   let password = '';
   let passwordError = '';
   let validLogin = false;
+  let loginErrorMessage = '';
 
   $: {
     if (loginSubmitted) {
@@ -25,23 +26,37 @@
 
   async function handleLogin() {
     if (validLogin) {
-      const loginData = JSON.stringify({
-        email,
-        password
-      });
+      try {
+        const loginData = JSON.stringify({
+          email,
+          password
+        });
 
-      const response = await login(loginData);
+        const response = await login(loginData);
 
-      if (response.ok) {
-        const location = response.headers.get('Location');
-        await invalidateAll();
-        goto(location);
+        if (response.ok) {
+          loginErrorMessage = '';
+          const location = response.headers.get('Location');
+          await invalidateAll();
+          goto(location);
+        } else {
+          loginErrorMessage = 'Invalid email and/or password.';
+        }
+      } catch (e) {
+        loginErrorMessage = 'Could not login, please try again later.';
+        console.error(`Error logging in: ${e}`, e);
       }
     }
   }
 </script>
 
 <h1>Login</h1>
+
+{#if loginErrorMessage}
+  <div class="alert alert-danger" role="alert">
+    {loginErrorMessage}
+  </div>
+{/if}
 
 <form on:submit|preventDefault={handleLogin}>
   <div class="mb-3">
