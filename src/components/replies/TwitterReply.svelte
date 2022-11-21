@@ -7,7 +7,7 @@
   export let post;
   export let reply = {};
   let loading = true;
-
+  let loadingErrorMessage = '';
   let replyComments = [];
 
   function updateReplyComments(comments) {
@@ -16,12 +16,24 @@
   }
 
   $: (async () => {
-    loading = true;
-    console.log('twitter reply changes', subjectId, post.id, reply.id);
-    const replyCommentsResponse = await getTwitterReplies(subjectId, post.id, reply.id);
-    const tweetData = await replyCommentsResponse.json();
-    updateReplyComments(tweetData);
-    console.log('tweet data', tweetData);
+    try {
+      loading = true;
+      console.log('twitter reply changes', subjectId, post.id, reply.id);
+      const replyCommentsResponse = await getTwitterReplies(subjectId, post.id, reply.id);
+
+      if (replyCommentsResponse.ok) {
+        const tweetData = await replyCommentsResponse.json();
+        updateReplyComments(tweetData);
+        console.log('tweet data', tweetData);
+        loadingErrorMessage = '';
+      } else {
+        console.error(`could not load replies, status: ${replyCommentsResponse.status}`);
+        loadingErrorMessage = `Could not load replies`;
+      }
+    } catch (e) {
+      console.error(`could not load replies ${e}`);
+      loadingErrorMessage = `Could not load replies`;
+    }
     loading = false;
   })();
 </script>
