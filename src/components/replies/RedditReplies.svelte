@@ -49,6 +49,8 @@
 <style>
   .post {
     margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dee2e6;
   }
 
   .replies {
