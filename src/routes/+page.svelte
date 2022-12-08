@@ -35,7 +35,15 @@
   <title>Correx</title>
 </svelte:head>
 
-<h1>Correx</h1>
+<div class="docs-container">
+  <h1>Introducing Correx</h1>
+
+  <p>
+    Thanks for trying Correx.news, the ASU News Co/Lab's new corrections tool. Our goal is to help
+    you easily send corrections and major updates down the same social media pathways that the
+    original stories traveled.
+  </p>
+</div>
 
 <style>
   h1 {
