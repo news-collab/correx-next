@@ -39,6 +39,7 @@
 </div>
 
 <div class="replies">
+  <h2>Replies</h2>
   {#each post.replies as reply}
     <TwitterReply subjectId={post.subject_id} {post} {reply} />
   {/each}
@@ -51,6 +52,9 @@
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid #dee2e6;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: rgb(110, 141, 176, 0.2);
   }
   .replies {
     margin-bottom: 10px;
