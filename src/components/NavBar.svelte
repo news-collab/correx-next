@@ -95,7 +95,7 @@
                 <li>
                   <a class="dropdown-item" href="/integrations">Integrations</a>
                 </li>
-                {#if true}
+                {#if user.admin}
                   <li>
                     <a class="dropdown-item" href="/admin/users" data-sveltekit-prefetch
                       >User Management</a
