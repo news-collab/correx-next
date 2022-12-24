@@ -26,14 +26,15 @@
   <img src="/screenshots/search-dan-example.png" alt="Search for a story example" width="50%" />
 
   <p>
-    Select the target audience for a followup or correction. This may be one or more Twitter
-    accounts that has shared the story.
+    Select the target post for a followup or correction. This may be one or more Twitter or Reddit
+    posts that have shared the story. You can switch between Reddit and Twitter search results by
+    clicking the respective button.
   </p>
   <img src="/screenshots/search-results.png" alt="Search results example" width="50%" />
 
   <p>
-    Compose the followup or correction and submit to the selected audiences individually. You can
-    also send a Tweet to your followers.
+    Compose the followup or correction by clicking the followup button and replying to the selected
+    post individually.
   </p>
   <img src="/screenshots/followup-example.png" alt="Compose followup example" width="50%" />
 
