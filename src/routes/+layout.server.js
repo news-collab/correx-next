@@ -18,6 +18,8 @@ export async function load({ request, url }) {
       }
     });
 
+    console.log('user approved', user.approved);
+
     // Don't allow user to login if not approved.
     if (user.approved === false && url.pathname !== '/waitlist') {
       throw redirect(302, '/waitlist');
