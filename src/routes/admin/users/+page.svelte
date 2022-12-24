@@ -132,6 +132,7 @@
   </div>
 </div>-->
 
+<h1>Manage Users</h1>
 <div class="users">
   {#if users.length > 0}
     <table>
