@@ -45,7 +45,7 @@ export async function getTwitterReplies(subjectId, postId, replyId) {
 }
 
 export async function updateUser(user) {
-  return fetch(`users/${user.id}.json`, {
+  return fetch(`/api/users/${user.id}`, {
     method: 'PUT',
     credentials: 'include',
     body: JSON.stringify(user),
