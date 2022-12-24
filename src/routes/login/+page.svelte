@@ -1,4 +1,5 @@
 <script>
+  import { redirect } from '@sveltejs/kit';
   import { required, length, confirmation } from '$lib/validation/validators';
   import { login } from '$lib/api';
   import { goto, invalidateAll } from '$app/navigation';
@@ -33,6 +34,13 @@
         });
 
         const response = await login(loginData);
+        if (response.redirected) {
+          loginErrorMessage = '';
+          console.log('url', response.url);
+          await invalidateAll();
+          window.location = response.url;
+          return;
+        }
 
         if (response.ok) {
           loginErrorMessage = '';
