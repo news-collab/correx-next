@@ -3,7 +3,7 @@ import { PrismaClient, platform } from '@prisma/client'
 import { getUserSession } from "$lib/session";
 
 /** @type {import('./$types').LayoutServerLoad} */
-export async function load({ request, url }) {
+export async function load({ request, url, cookies }) {
   const session = getUserSession(request.headers);
 
   if (!session) {
@@ -18,10 +18,9 @@ export async function load({ request, url }) {
       }
     });
 
-    console.log('user approved', user.approved);
-
     // Don't allow user to login if not approved.
     if (user.approved === false && url.pathname !== '/waitlist') {
+      cookies.delete("session");
       throw redirect(302, '/waitlist');
     }
 

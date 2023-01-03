@@ -1,3 +1,20 @@
+<script>
+  import { browser } from '$app/environment';
+
+  import { invalidateAll } from '$app/navigation';
+
+  export let data;
+
+  async function welcome() {
+    await invalidateAll();
+  }
+  if (browser) {
+    welcome();
+  }
+
+  console.log(data);
+</script>
+
 <h1>Welcome</h1>
 
 <p>
