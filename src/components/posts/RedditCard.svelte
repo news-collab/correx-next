@@ -7,25 +7,47 @@
   import GoArrowDown from 'svelte-icons/go/GoArrowDown.svelte';
   import moment from 'moment';
 
+  import { selectedPosts } from '@/stores/posts.js';
+
   export let post;
   export let onSelect;
+
+  let selected = false;
 </script>
 
 <div class="card" style="width: 18rem;">
   <div class="card-body">
-    <div class="card-title">
-      <div class="author">
-        <a href="https://www.reddit.com/u/{post.data.author.name}" target="author_{post.id}"
-          >{post.data.author.name}</a
-        >
-        <a href={`https://reddit.com/${post.data.permalink}`} target="reddit_${post.platform_id}"
-          >wrote</a
-        >
-        on
-        <div class="created">
-          {moment.parseZone(post.data.created_at).format('MMMM Do YYYY, h:mm:ss a')}
+    <div class="card-head">
+      <div class="card-title">
+        <div class="author">
+          <a href="https://www.reddit.com/u/{post.data.author.name}" target="author_{post.id}"
+            >{post.data.author.name}</a
+          >
+          <a href={`https://reddit.com/${post.data.permalink}`} target="reddit_${post.platform_id}"
+            >wrote</a
+          >
+          on
+          <div class="created">
+            {moment.parseZone(post.data.created_at).format('MMMM Do YYYY, h:mm:ss a')}
+          </div>
         </div>
       </div>
+      <input
+        class="post-selector form-control-sm"
+        type="checkbox"
+        {selected}
+        on:change={(e) => {
+          e.target.selected = selected;
+          selectedPosts.update((posts) => {
+            if (e.target.selected) {
+              return [...posts, post];
+            }
+
+            return posts.filter((p) => p.id !== post.id);
+          });
+          e.target.indeterminate = false;
+        }}
+      />
     </div>
     <div class="card-text">
       {post.data.title}
@@ -83,8 +105,17 @@
     margin: 10px;
   }
 
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .card-title {
     font-weight: bold;
+  }
+
+  .card-title .post-selector {
+    border-color: #000;
   }
 
   .external-submission-link.icon {

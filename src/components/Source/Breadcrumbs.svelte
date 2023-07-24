@@ -61,6 +61,8 @@
         Twitter</button
       >
     </div>
+
+    <button type="button" class="btn btn-primary">Compare</button>
   </div>
 </nav>
 
@@ -70,6 +72,9 @@
     align-items: center;
   }
   .segment {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
   }
   .active {
     text-decoration: double;
