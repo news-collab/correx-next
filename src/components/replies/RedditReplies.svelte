@@ -34,7 +34,6 @@
         </div>
       </div>
     </div>
-    <input type="checkbox" /> helo
   </div>
   <div class="card-text">
     {post.data.title}
