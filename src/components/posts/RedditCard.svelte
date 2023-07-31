@@ -39,7 +39,8 @@
         on:change={(e) => {
           e.target.selected = selected;
           selectedPosts.update((posts) => {
-            if (e.target.selected) {
+            console.log('posts', posts, e.target.checked);
+            if (e.target.checked) {
               return [...posts, post];
             }
 

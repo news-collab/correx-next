@@ -4,6 +4,7 @@
   import RedditCard from '@/components/posts/RedditCard.svelte';
   import TwitterCard from '@/components/posts/TwitterCard.svelte';
   import ReplyModal from '@/components/replies/ReplyModal.svelte';
+  import CompareModal from '@/components/posts/CompareModal.svelte';
 
   export let platform = '';
   export let subjectId = '';
@@ -133,6 +134,7 @@
 {/if}
 
 <ReplyModal post={selectedPost} />
+<CompareModal />
 
 <style>
   .post-row {
