@@ -3,6 +3,8 @@
   import FaTwitterSquare from 'svelte-icons/fa/FaTwitterSquare.svelte';
   import { goto } from '$app/navigation';
 
+  import { selectedPosts } from '@/stores/posts.js';
+
   export let platform;
   export let active;
   export let subjectId;
@@ -62,12 +64,14 @@
       >
     </div>
 
-    <button
-      type="button"
-      class="btn btn-primary"
-      data-bs-toggle="modal"
-      data-bs-target="#compare_modal">Compare</button
-    >
+    {#if $selectedPosts.length > 0}
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#compare_modal">Compare</button
+      >
+    {/if}
   </div>
 </nav>
 

@@ -1,6 +1,5 @@
 <script>
   import { selectedPosts, sortedSelectedPosts } from '@/stores/posts.js';
-  console.log(sortedSelectedPosts);
 </script>
 
 <div class="modal" id="compare_modal" tabindex="-1">
@@ -23,7 +22,17 @@
           <tbody>
             {#each $sortedSelectedPosts as post}
               <tr>
-                <th scope="row"><span class="text-truncate">{post.data.title}</span></th>
+                <th scope="row"
+                  ><span
+                    class="text-truncate"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    data-bs-title={post.data.title}
+                    >{post.data.title.length > 80
+                      ? `${post.data.title.substring(0, 80)}...`
+                      : post.data.title}</span
+                  ></th
+                >
                 <td>@{post.data.author.name}</td>
                 <td>{post.data.score}</td>
                 <td>{post.data.num_comments}</td>
