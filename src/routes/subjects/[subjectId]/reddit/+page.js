@@ -7,7 +7,7 @@ export async function load({ params, fetch }) {
   try {
     const response = await fetch(path);
     const subject = await response.json();
-
+    console.log(subject);
     return { subject };
   } catch (e) {
     throw error(404, 'could not find subject');
